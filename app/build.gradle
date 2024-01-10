@@ -19,7 +19,7 @@ apply plugin: 'kotlin-android'
 android {
     compileSdkVersion 33
     defaultConfig {
-        applicationId "com.example.foldAR.examples.kotlin.helloar"
+        applicationId "com.example.foldAR.kotlin.helloar"
 
         // AR Optional apps must declare minSdkVersion >= 14.
         // AR Required apps must declare minSdkVersion >= 24.
