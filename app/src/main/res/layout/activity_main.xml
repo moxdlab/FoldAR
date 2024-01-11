@@ -38,11 +38,24 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/image_move_object"
+        android:id="@+id/image_move_object_plane"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="100dp"
+        android:background="@drawable/koordinatensystem"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/surfaceview" />
+
+    <ImageView
+        android:id="@+id/image_move_object_height"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/arrow_up"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/image_move_object_plane"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/surfaceview" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

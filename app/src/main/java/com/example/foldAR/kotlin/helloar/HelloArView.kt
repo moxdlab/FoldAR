@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.opengl.GLSurfaceView
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageButton
@@ -20,18 +19,25 @@ import com.example.foldAR.java.helpers.SnackbarHelper
 import com.example.foldAR.java.helpers.TapHelper
 import com.google.ar.core.Config
 
-const val SCALE_FACTOR = 500
+
+const val SCALE_FACTOR_SLOW = 5000
+const val SCALE_FACTOR_MEDIUM = 2000
+const val SCALE_FACTOR_FAST = 500
+
 const val CIRCLE_RADIUS = 20f
 
 /** Contains UI elements for Hello AR. */
 class HelloArView(val activity: HelloArActivity) : DefaultLifecycleObserver {
+
+    var SCALE_FACTOR = SCALE_FACTOR_MEDIUM
 
     val calculatePosition = CalculatePosition()
     var anchorPos: FloatArray = FloatArray(3)
 
     val root = View.inflate(activity, R.layout.activity_main, null)
     val surfaceView = root.findViewById<GLSurfaceView>(R.id.surfaceview)
-    val settingsButton = root.findViewById<ImageButton>(R.id.settings_button).apply {
+
+    /*val settingsButton = root.findViewById<ImageButton>(R.id.settings_button).apply {
         setOnClickListener { v ->
             PopupMenu(activity, v).apply {
                 setOnMenuItemClickListener { item ->
@@ -45,7 +51,36 @@ class HelloArView(val activity: HelloArActivity) : DefaultLifecycleObserver {
                 show()
             }
         }
+    }*/
+
+    val settingsButton = root.findViewById<ImageButton>(R.id.settings_button).apply {
+        setOnClickListener { v ->
+            PopupMenu(activity, v).apply {
+                setOnMenuItemClickListener { item -> updateScaleFactor(item.itemId) }
+                inflate(R.menu.settings_menu)
+                show()
+            }
+        }
+    }!!
+
+    private fun updateScaleFactor(itemId: Int): Boolean {
+        return when (itemId) {
+            R.id.slow -> {
+                SCALE_FACTOR = SCALE_FACTOR_SLOW
+                true
+            }
+            R.id.medium -> {
+                SCALE_FACTOR = SCALE_FACTOR_MEDIUM
+                true
+            }
+            R.id.fast -> {
+                SCALE_FACTOR = SCALE_FACTOR_FAST
+                true
+            }
+            else -> false
+        }
     }
+
 
     val bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
@@ -55,12 +90,11 @@ class HelloArView(val activity: HelloArActivity) : DefaultLifecycleObserver {
 
 
     //Todo fucking clean up code
-    val moveView = root.findViewById<ImageView>(R.id.image_move_object).apply {
+    val moveViewPlane = root.findViewById<ImageView>(R.id.image_move_object_plane).apply {
         setOnTouchListener { view, event ->
             if (event.action == MotionEvent.ACTION_DOWN && activity.renderer.wrappedAnchors.isNotEmpty()) {
                 val anchor = activity.renderer.wrappedAnchors[0].anchor.pose
                 anchorPos[0] = anchor.tx()
-                anchorPos[1] = anchor.ty()
                 anchorPos[2] = anchor.tz()
             }
             if (event.action == MotionEvent.ACTION_MOVE) {
@@ -70,13 +104,14 @@ class HelloArView(val activity: HelloArActivity) : DefaultLifecycleObserver {
                 val touchX = event.x * scaleFactorX
                 val touchY = event.y * scaleFactorY
 
-                calculatePosition.calculatePoints(touchX, touchY)
+                calculatePosition.calculatePointsPlane(touchX, touchY)
 
-                val newX = anchorPos[0] + calculatePosition.returnValueZ() / SCALE_FACTOR
+                val newX =
+                    anchorPos[0] + calculatePosition.returnValueZ() / SCALE_FACTOR //for ground movement
                 val newZ = anchorPos[2] + calculatePosition.returnValueX() / SCALE_FACTOR
-                activity.renderer.moveAnchor(newX, newZ, 0)
 
-                Log.d("anchorPosInView", "View: $newX ------- $newZ ------- ${anchorPos[0]}")
+                activity.renderer.moveAnchorPlane(newX, newZ, 0)
+
                 view.performClick()
                 canvas.drawCircle(touchX, touchY, CIRCLE_RADIUS, paintX)
                 setImageBitmap(bitmap)
@@ -84,6 +119,33 @@ class HelloArView(val activity: HelloArActivity) : DefaultLifecycleObserver {
             if (event.action == MotionEvent.ACTION_UP) {
                 canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
                 setImageBitmap(bitmap)
+            }
+            true
+        }
+    }
+
+    val moveViewHeight = root.findViewById<ImageView>(R.id.image_move_object_height).apply {
+        setOnTouchListener { view, event ->
+            if (event.action == MotionEvent.ACTION_DOWN && activity.renderer.wrappedAnchors.isNotEmpty()) {
+                val anchor = activity.renderer.wrappedAnchors[0].anchor.pose
+                anchorPos[1] = anchor.ty()
+            }
+            if (event.action == MotionEvent.ACTION_MOVE) {
+                val scaleFactorY = bitmap.height.toFloat() / view.height
+
+                val touchX = event.y * scaleFactorY
+
+                calculatePosition.calculatePointsHeight(touchX)
+
+                val newY =
+                    anchorPos[1] + calculatePosition.returnValueY() / SCALE_FACTOR //for height
+
+                activity.renderer.moveAnchorHeight(newY, 0)
+
+                view.performClick()
+            }
+            if (event.action == MotionEvent.ACTION_UP) {
+                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
             }
             true
         }

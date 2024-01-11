@@ -474,7 +474,7 @@ class HelloArRenderer(val activity: HelloArActivity) : SampleRender.Renderer,
         if (firstHitResult != null) {
             // Cap the number of objects created. This avoids overloading both the
             // rendering system and ARCore.
-            if (wrappedAnchors.size >= 20) {
+            if (wrappedAnchors.size >= 1) {
                 wrappedAnchors[0].anchor.detach()
                 wrappedAnchors.removeAt(0)
             }
@@ -494,13 +494,29 @@ class HelloArRenderer(val activity: HelloArActivity) : SampleRender.Renderer,
         }
     }
 
-    fun moveAnchor(moveX: Float, moveZ: Float, position: Int) {
+    fun moveAnchorPlane(moveX: Float, moveZ: Float, position: Int) {
+        //val frame = session!!.update()
         if (wrappedAnchors.isNotEmpty()) {
 
             val pose = Pose.makeTranslation( //x,y,z
                 moveX,
                 wrappedAnchors[position].anchor.pose.ty(),
                 moveZ
+            )
+            val newAnchor = WrappedAnchor(session!!.createAnchor(pose), wrappedAnchors[position].trackable)
+
+            wrappedAnchors[position] = newAnchor
+        }
+    }
+
+    fun moveAnchorHeight(moveY: Float, position: Int) {
+        //val frame = session!!.update()
+        if (wrappedAnchors.isNotEmpty()) {
+
+            val pose = Pose.makeTranslation( //x,y,z
+                wrappedAnchors[position].anchor.pose.tx(),
+                moveY,
+                wrappedAnchors[position].anchor.pose.tz(),
             )
             val newAnchor = WrappedAnchor(session!!.createAnchor(pose), wrappedAnchors[position].trackable)
 
