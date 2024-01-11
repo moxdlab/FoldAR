@@ -57,6 +57,7 @@ class HelloArActivity : AppCompatActivity() {
           }
         Log.e(TAG, "ARCore threw an exception", exception)
         view.snackbarHelper.showError(this, message)
+
       }
 
     // Configure session features, including: Lighting Estimation, Depth mode, Instant Placement.
