@@ -29,6 +29,7 @@ class HelloArActivity : AppCompatActivity() {
     private const val TAG = "HelloArActivity"
   }
 
+
   lateinit var arCoreSessionHelper: ARCoreSessionLifecycleHelper
   lateinit var view: HelloArView
   lateinit var renderer: HelloArRenderer

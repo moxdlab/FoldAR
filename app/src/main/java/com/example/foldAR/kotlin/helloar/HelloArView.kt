@@ -1,11 +1,6 @@
 package com.example.foldAR.kotlin.helloar
 
-import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.PorterDuff
 import android.opengl.GLSurfaceView
 import android.view.MotionEvent
 import android.view.View
@@ -24,35 +19,21 @@ const val SCALE_FACTOR_SLOW = 5000
 const val SCALE_FACTOR_MEDIUM = 2000
 const val SCALE_FACTOR_FAST = 500
 
-const val CIRCLE_RADIUS = 20f
+const val CIRCLE_RADIUS = 10f
 
 /** Contains UI elements for Hello AR. */
 class HelloArView(val activity: HelloArActivity) : DefaultLifecycleObserver {
 
-    var SCALE_FACTOR = SCALE_FACTOR_MEDIUM
+    private val changeAnchor = ChangeAnchor()
+    private var anchorPos: FloatArray = FloatArray(3)
 
-    val calculatePosition = CalculatePosition()
-    var anchorPos: FloatArray = FloatArray(3)
+    val root: View = View.inflate(activity, R.layout.activity_main, null)
+    val surfaceView: GLSurfaceView = root.findViewById(R.id.surfaceview)
 
-    val root = View.inflate(activity, R.layout.activity_main, null)
-    val surfaceView = root.findViewById<GLSurfaceView>(R.id.surfaceview)
+    //for viewing the points on the map
+    private val bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)
 
-    /*val settingsButton = root.findViewById<ImageButton>(R.id.settings_button).apply {
-        setOnClickListener { v ->
-            PopupMenu(activity, v).apply {
-                setOnMenuItemClickListener { item ->
-                    when (item.itemId) {
-                        R.id.depth_settings -> launchDepthSettingsMenuDialog()
-                        R.id.instant_placement_settings -> launchInstantPlacementSettingsMenuDialog()
-                        else -> null
-                    } != null
-                }
-                inflate(R.menu.settings_menu)
-                show()
-            }
-        }
-    }*/
-
+    //change moving speed of the object
     val settingsButton = root.findViewById<ImageButton>(R.id.settings_button).apply {
         setOnClickListener { v ->
             PopupMenu(activity, v).apply {
@@ -66,93 +47,48 @@ class HelloArView(val activity: HelloArActivity) : DefaultLifecycleObserver {
     private fun updateScaleFactor(itemId: Int): Boolean {
         return when (itemId) {
             R.id.slow -> {
-                SCALE_FACTOR = SCALE_FACTOR_SLOW
+                changeAnchor.setScaleFactor(SCALE_FACTOR_SLOW)
                 true
             }
+
             R.id.medium -> {
-                SCALE_FACTOR = SCALE_FACTOR_MEDIUM
+                changeAnchor.setScaleFactor(SCALE_FACTOR_MEDIUM)
                 true
             }
+
             R.id.fast -> {
-                SCALE_FACTOR = SCALE_FACTOR_FAST
+                changeAnchor.setScaleFactor(SCALE_FACTOR_FAST)
                 true
             }
+
             else -> false
         }
     }
 
+    val moveView = { id: Int, action: (Float, Float, Int) -> Unit ->
+        root.findViewById<ImageView>(id).apply {
+            setOnTouchListener { view, event ->
+                if (event.action == MotionEvent.ACTION_DOWN && activity.renderer.wrappedAnchors.isNotEmpty()) {
+                    anchorPos = activity.renderer.getAnchorPosition(0)!!
+                }
+                if (event.action == MotionEvent.ACTION_MOVE && activity.renderer.wrappedAnchors.isNotEmpty()) {
+                    changeAnchor.getNewPosition(event, view, bitmap, anchorPos)
 
-    val bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    private val paintX = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.RED
+                    action(changeAnchor.newX, changeAnchor.newZ, 0)
+
+                    view.performClick()
+                }
+                true
+            }
+        }!!
     }
 
-
-    //Todo fucking clean up code
-    val moveViewPlane = root.findViewById<ImageView>(R.id.image_move_object_plane).apply {
-        setOnTouchListener { view, event ->
-            if (event.action == MotionEvent.ACTION_DOWN && activity.renderer.wrappedAnchors.isNotEmpty()) {
-                val anchor = activity.renderer.wrappedAnchors[0].anchor.pose
-                anchorPos[0] = anchor.tx()
-                anchorPos[2] = anchor.tz()
-            }
-            if (event.action == MotionEvent.ACTION_MOVE) {
-                val scaleFactorX = bitmap.width.toFloat() / view.width
-                val scaleFactorY = bitmap.height.toFloat() / view.height
-
-                val touchX = event.x * scaleFactorX
-                val touchY = event.y * scaleFactorY
-
-                calculatePosition.calculatePointsPlane(touchX, touchY)
-
-                val newX =
-                    anchorPos[0] + calculatePosition.returnValueZ() / SCALE_FACTOR //for ground movement
-                val newZ = anchorPos[2] + calculatePosition.returnValueX() / SCALE_FACTOR
-
-                activity.renderer.moveAnchorPlane(newX, newZ, 0)
-
-                view.performClick()
-                canvas.drawCircle(touchX, touchY, CIRCLE_RADIUS, paintX)
-                setImageBitmap(bitmap)
-            }
-            if (event.action == MotionEvent.ACTION_UP) {
-                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-                setImageBitmap(bitmap)
-            }
-            true
-        }
+    val moveViewPlane = moveView(R.id.image_move_object_plane, activity.renderer::moveAnchorPlane)
+    val moveViewHeight = moveView(R.id.image_move_object_height) { _, _, position ->
+        activity.renderer.moveAnchorHeight(changeAnchor.newY, position)
     }
 
-    val moveViewHeight = root.findViewById<ImageView>(R.id.image_move_object_height).apply {
-        setOnTouchListener { view, event ->
-            if (event.action == MotionEvent.ACTION_DOWN && activity.renderer.wrappedAnchors.isNotEmpty()) {
-                val anchor = activity.renderer.wrappedAnchors[0].anchor.pose
-                anchorPos[1] = anchor.ty()
-            }
-            if (event.action == MotionEvent.ACTION_MOVE) {
-                val scaleFactorY = bitmap.height.toFloat() / view.height
-
-                val touchX = event.y * scaleFactorY
-
-                calculatePosition.calculatePointsHeight(touchX)
-
-                val newY =
-                    anchorPos[1] + calculatePosition.returnValueY() / SCALE_FACTOR //for height
-
-                activity.renderer.moveAnchorHeight(newY, 0)
-
-                view.performClick()
-            }
-            if (event.action == MotionEvent.ACTION_UP) {
-                canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-            }
-            true
-        }
-    }
-
-
-    val session
+    private val session
         get() = activity.arCoreSessionHelper.session
 
     val snackbarHelper = SnackbarHelper()
@@ -186,46 +122,5 @@ class HelloArView(val activity: HelloArActivity) : DefaultLifecycleObserver {
             }.setNegativeButton(R.string.button_text_disable_depth) { _, _ ->
                 activity.depthSettings.setUseDepthForOcclusion(false)
             }.show()
-    }
-
-    private fun launchInstantPlacementSettingsMenuDialog() {
-        val resources = activity.resources
-        val strings = resources.getStringArray(R.array.instant_placement_options_array)
-        val checked = booleanArrayOf(activity.instantPlacementSettings.isInstantPlacementEnabled)
-        AlertDialog.Builder(activity).setTitle(R.string.options_title_instant_placement)
-            .setMultiChoiceItems(strings, checked) { _, which, isChecked ->
-                checked[which] = isChecked
-            }.setPositiveButton(R.string.done) { _, _ ->
-                val session = session ?: return@setPositiveButton
-                activity.instantPlacementSettings.isInstantPlacementEnabled = checked[0]
-                activity.configureSession(session)
-            }.show()
-    }
-
-    /** Shows checkboxes to the user to facilitate toggling of depth-based effects. */
-    private fun launchDepthSettingsMenuDialog() {
-        val session = session ?: return
-
-        // Shows the dialog to the user.
-        val resources: Resources = activity.resources
-        val checkboxes = booleanArrayOf(
-            activity.depthSettings.useDepthForOcclusion(),
-            activity.depthSettings.depthColorVisualizationEnabled()
-        )
-        if (session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)) {
-            // With depth support, the user can select visualization options.
-            val stringArray = resources.getStringArray(R.array.depth_options_array)
-            AlertDialog.Builder(activity).setTitle(R.string.options_title_with_depth)
-                .setMultiChoiceItems(stringArray, checkboxes) { _, which, isChecked ->
-                    checkboxes[which] = isChecked
-                }.setPositiveButton(R.string.done) { _, _ ->
-                    activity.depthSettings.setUseDepthForOcclusion(checkboxes[0])
-                    activity.depthSettings.setDepthColorVisualizationEnabled(checkboxes[1])
-                }.show()
-        } else {
-            // Without depth support, no settings are available.
-            AlertDialog.Builder(activity).setTitle(R.string.options_title_without_depth)
-                .setPositiveButton(R.string.done) { _, _ -> /* No settings to apply. */ }.show()
-        }
     }
 }

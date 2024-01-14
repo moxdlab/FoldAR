@@ -67,12 +67,13 @@ class HelloArRenderer(val activity: HelloArActivity) : SampleRender.Renderer,
         // camera. Use larger values for experiences where the user will likely be standing and trying
         // to
         // place an object on the ground or floor in front of them.
-        val APPROXIMATE_DISTANCE_METERS = 2.0f
+        val APPROXIMATE_DISTANCE_METERS = 1.0f
 
         val CUBEMAP_RESOLUTION = 16
         val CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES = 32
     }
 
+    lateinit var camera: Camera
     lateinit var render: SampleRender
     lateinit var planeRenderer: PlaneRenderer
     lateinit var backgroundRenderer: BackgroundRenderer
@@ -253,6 +254,7 @@ class HelloArRenderer(val activity: HelloArActivity) : SampleRender.Renderer,
 
         val camera = frame.camera
 
+        this.camera = camera
         // Update BackgroundRenderer state to match the depth settings.
         try {
             backgroundRenderer.setUseDepthVisualization(
@@ -344,7 +346,7 @@ class HelloArRenderer(val activity: HelloArActivity) : SampleRender.Renderer,
         planeRenderer.drawPlanes(
             render,
             session.getAllTrackables<Plane>(Plane::class.java),
-            camera.displayOrientedPose,
+            camera.displayOrientedPose, //Todo
             projectionMatrix
         )
 
@@ -376,7 +378,6 @@ class HelloArRenderer(val activity: HelloArActivity) : SampleRender.Renderer,
             virtualObjectShader.setTexture("u_AlbedoTexture", texture)
             render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
         }
-
         // Compose the virtual scene with the background.
         backgroundRenderer.drawVirtualScene(render, virtualSceneFramebuffer, Z_NEAR, Z_FAR)
     }
@@ -484,7 +485,10 @@ class HelloArRenderer(val activity: HelloArActivity) : SampleRender.Renderer,
             // in the correct position relative both to the world and to the plane.
             val anchor = WrappedAnchor(firstHitResult.createAnchor(), firstHitResult.trackable)
 
-            Log.d("anchorPosInView", "Rend: ${anchor.anchor.pose.tx()} ----- ${anchor.anchor.pose.tz()}")
+            Log.d(
+                "anchorPosInView",
+                "Rend: ${anchor.anchor.pose.tx()} ----- ${anchor.anchor.pose.tz()}"
+            )
 
             wrappedAnchors.add(anchor)
 
@@ -494,35 +498,40 @@ class HelloArRenderer(val activity: HelloArActivity) : SampleRender.Renderer,
         }
     }
 
-    fun moveAnchorPlane(moveX: Float, moveZ: Float, position: Int) {
-        //val frame = session!!.update()
-        if (wrappedAnchors.isNotEmpty()) {
-
-            val pose = Pose.makeTranslation( //x,y,z
-                moveX,
-                wrappedAnchors[position].anchor.pose.ty(),
-                moveZ
-            )
-            val newAnchor = WrappedAnchor(session!!.createAnchor(pose), wrappedAnchors[position].trackable)
-
+    private fun moveAnchor(moveX: Float, moveY: Float, moveZ: Float, position: Int) {
+        if (wrappedAnchors.isNotEmpty()) { //Todo crashes if no anchor´s found
+            val pose = Pose.makeTranslation(moveX, moveY, moveZ)
+            val newAnchor =
+                WrappedAnchor(session!!.createAnchor(pose), wrappedAnchors[position].trackable)
             wrappedAnchors[position] = newAnchor
         }
+    }
+
+    fun moveAnchorPlane(moveX: Float, moveZ: Float, position: Int) {
+        moveAnchor(moveX, wrappedAnchors[position].anchor.pose.ty(), moveZ, position)
     }
 
     fun moveAnchorHeight(moveY: Float, position: Int) {
-        //val frame = session!!.update()
-        if (wrappedAnchors.isNotEmpty()) {
-
-            val pose = Pose.makeTranslation( //x,y,z
-                wrappedAnchors[position].anchor.pose.tx(),
-                moveY,
-                wrappedAnchors[position].anchor.pose.tz(),
-            )
-            val newAnchor = WrappedAnchor(session!!.createAnchor(pose), wrappedAnchors[position].trackable)
-
-            wrappedAnchors[position] = newAnchor
-        }
+        moveAnchor(
+            wrappedAnchors[position].anchor.pose.tx(),
+            moveY,
+            wrappedAnchors[position].anchor.pose.tz(),
+            position
+        )
     }
+
+    fun getAnchorPosition(anchor: Int): FloatArray? {
+        val quaternion = camera.pose.rotationQuaternion
+        Log.d("cameraPosition", "X: ${quaternion[0]}  Y: ${quaternion[1]} Z: ${quaternion[2]}")
+        return (wrappedAnchors[anchor]?.let {
+            val pose = it.anchor.pose
+            floatArrayOf(pose.tx(), pose.ty(), pose.tz())
+        }) ?: null
+    }
+
+    private fun getAngle(){
+    }
+
 
     private fun showError(errorMessage: String) =
         activity.view.snackbarHelper.showError(activity, errorMessage)
