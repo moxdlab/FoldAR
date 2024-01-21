@@ -10,6 +10,7 @@ import com.example.foldAR.java.helpers.FullScreenHelper
 import com.example.foldAR.java.helpers.InstantPlacementSettings
 import com.example.foldAR.java.samplerender.SampleRender
 import com.example.foldAR.kotlin.helpers.ARCoreSessionLifecycleHelper
+import com.example.foldAR.kotlin.renderer.HelloArRenderer
 import com.google.ar.core.Config
 import com.google.ar.core.Config.InstantPlacementMode
 import com.google.ar.core.Session

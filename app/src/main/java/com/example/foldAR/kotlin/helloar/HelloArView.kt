@@ -12,6 +12,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.example.foldAR.java.helpers.SnackbarHelper
 import com.example.foldAR.java.helpers.TapHelper
+import com.example.foldAR.kotlin.anchorManipulation.ChangeAnchor
 import com.google.ar.core.Config
 
 

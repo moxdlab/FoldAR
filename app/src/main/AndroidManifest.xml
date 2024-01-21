@@ -25,10 +25,10 @@
         android:usesCleartextTraffic="false"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name="com.example.foldAR.kotlin.activities.CameraPlaneActivity"
+            android:name="com.example.foldAR.kotlin.cameraPlane.CameraPlaneActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.foldAR.kotlin.activities.RectanglePlaneActivity"
+            android:name="com.example.foldAR.kotlin.rectanglePlane.RectanglePlaneActivity"
             android:exported="false" />
         <activity
             android:name=".HelloArActivity"
