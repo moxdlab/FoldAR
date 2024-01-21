@@ -17,8 +17,8 @@ import com.example.foldAR.java.samplerender.VertexBuffer
 import com.example.foldAR.java.samplerender.arcore.BackgroundRenderer
 import com.example.foldAR.java.samplerender.arcore.PlaneRenderer
 import com.example.foldAR.java.samplerender.arcore.SpecularCubemapFilter
-import com.example.foldAR.kotlin.helloar.HelloArActivity
 import com.example.foldAR.kotlin.helloar.R
+import com.example.foldAR.kotlin.objectPlane.HelloArActivity
 import com.google.ar.core.Anchor
 import com.google.ar.core.Camera
 import com.google.ar.core.DepthPoint

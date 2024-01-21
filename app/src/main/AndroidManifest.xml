@@ -23,7 +23,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="false"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        android:dataExtractionRules="@xml/data_extraction_rules">
         <activity
             android:name="com.example.foldAR.kotlin.cameraPlane.CameraPlaneActivity"
             android:exported="false" />
@@ -31,7 +32,7 @@
             android:name="com.example.foldAR.kotlin.rectanglePlane.RectanglePlaneActivity"
             android:exported="false" />
         <activity
-            android:name=".HelloArActivity"
+            android:name="com.example.foldAR.kotlin.objectPlane.HelloArActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:screenOrientation="landscape"
