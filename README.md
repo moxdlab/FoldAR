@@ -71,7 +71,9 @@ deprecated ARCore Cloud Anchor service.
 
 
 
-Exposé 
+
+
+## Exposé 
 
 Erleichterte Anwendung von Augmented Reality durch Nutzung faltbarer Android Smartphones 
 
