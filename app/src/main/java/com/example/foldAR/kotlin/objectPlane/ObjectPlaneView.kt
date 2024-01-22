@@ -21,15 +21,13 @@ const val SCALE_FACTOR_SLOW = 5000
 const val SCALE_FACTOR_MEDIUM = 2000
 const val SCALE_FACTOR_FAST = 500
 
-const val CIRCLE_RADIUS = 10f
-
 /** Contains UI elements for Hello AR. */
-class HelloArView(val activity: HelloArActivity) : DefaultLifecycleObserver {
+class ObjectPlaneView(val activity: ObjectPlaneActivity) : DefaultLifecycleObserver {
 
     private val changeAnchor = ChangeAnchor()
     private var anchorPos: FloatArray = FloatArray(3)
 
-    val root: View = View.inflate(activity, R.layout.activity_main, null)
+    val root: View = View.inflate(activity, R.layout.activity_object_plane, null)
     val surfaceView: GLSurfaceView = root.findViewById(R.id.surfaceview)
 
     //for viewing the points on the map

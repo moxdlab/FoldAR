@@ -37,5 +37,7 @@
     <string name="change_movement">Changes movement of rectangle from static to dynamic.</string>
     <string name="staticc">Static</string>
     <string name="dynamic">Dynamic</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

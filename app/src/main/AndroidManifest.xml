@@ -32,7 +32,7 @@
             android:name="com.example.foldAR.kotlin.rectanglePlane.RectanglePlaneActivity"
             android:exported="false" />
         <activity
-            android:name="com.example.foldAR.kotlin.objectPlane.HelloArActivity"
+            android:name="com.example.foldAR.kotlin.objectPlane.ObjectPlaneActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:screenOrientation="landscape"

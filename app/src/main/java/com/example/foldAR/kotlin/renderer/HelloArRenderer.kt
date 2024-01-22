@@ -18,7 +18,7 @@ import com.example.foldAR.java.samplerender.arcore.BackgroundRenderer
 import com.example.foldAR.java.samplerender.arcore.PlaneRenderer
 import com.example.foldAR.java.samplerender.arcore.SpecularCubemapFilter
 import com.example.foldAR.kotlin.helloar.R
-import com.example.foldAR.kotlin.objectPlane.HelloArActivity
+import com.example.foldAR.kotlin.objectPlane.ObjectPlaneActivity
 import com.google.ar.core.Anchor
 import com.google.ar.core.Camera
 import com.google.ar.core.DepthPoint
@@ -38,7 +38,7 @@ import java.io.IOException
 import java.nio.ByteBuffer
 
 /** Renders the HelloAR application using our example Renderer. */
-class HelloArRenderer(val activity: HelloArActivity) : SampleRender.Renderer,
+class HelloArRenderer(val activity: ObjectPlaneActivity) : SampleRender.Renderer,
     DefaultLifecycleObserver {
     companion object {
         val TAG = "HelloArRenderer"
