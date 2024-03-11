@@ -8,7 +8,7 @@ import android.view.View
 
 //To map it on the coordinate system and use a Bitmap of Size 500, 500
 class ChangeAnchor {
-    private var scaleFactor: Int = 2000
+    private var scaleFactor: Int = 500
     private lateinit var anchor: FloatArray
 
     fun setScaleFactor(factor: Int) {
