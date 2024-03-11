@@ -18,7 +18,7 @@ import com.example.foldAR.java.samplerender.arcore.BackgroundRenderer
 import com.example.foldAR.java.samplerender.arcore.PlaneRenderer
 import com.example.foldAR.java.samplerender.arcore.SpecularCubemapFilter
 import com.example.foldAR.kotlin.helloar.R
-import com.example.foldAR.kotlin.objectPlane.ObjectPlaneActivity
+import com.example.foldAR.kotlin.mainActivity.MainActivity
 import com.google.ar.core.Anchor
 import com.google.ar.core.Camera
 import com.google.ar.core.DepthPoint
@@ -38,7 +38,7 @@ import java.io.IOException
 import java.nio.ByteBuffer
 
 /** Renders the HelloAR application using our example Renderer. */
-class HelloArRenderer(val activity: ObjectPlaneActivity) : SampleRender.Renderer,
+class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
     DefaultLifecycleObserver {
     companion object {
         val TAG = "HelloArRenderer"
@@ -450,7 +450,7 @@ class HelloArRenderer(val activity: ObjectPlaneActivity) : SampleRender.Renderer
     // Handle only one tap per frame, as taps are usually low frequency compared to frame rate.
     private fun handleTap(frame: Frame, camera: Camera) {
         if (camera.trackingState != TrackingState.TRACKING) return
-        val tap = activity.view.tapHelper.poll() ?: return
+        val tap = activity.tapHelper.poll() ?: return
 
         val hitResultList = if (activity.instantPlacementSettings.isInstantPlacementEnabled) {
             frame.hitTestInstantPlacement(tap.x, tap.y, APPROXIMATE_DISTANCE_METERS)
@@ -496,7 +496,7 @@ class HelloArRenderer(val activity: ObjectPlaneActivity) : SampleRender.Renderer
 
             // For devices that support the Depth API, shows a dialog to suggest enabling
             // depth-based occlusion. This dialog needs to be spawned on the UI thread.
-            activity.runOnUiThread { activity.view.showOcclusionDialogIfNeeded() }
+            activity.runOnUiThread { activity.showOcclusionDialogIfNeeded() }
         }
     }
 
@@ -512,7 +512,12 @@ class HelloArRenderer(val activity: ObjectPlaneActivity) : SampleRender.Renderer
     }
 
     fun moveAnchorPlane(moveX: Float, moveZ: Float, position: Int) {
-        moveAnchor(moveX, wrappedAnchors[position].anchor.pose.ty(), moveZ, position)
+        moveAnchor(
+            moveX,
+            wrappedAnchors[position].anchor.pose.ty(),
+            moveZ,
+            position
+        )
     }
 
     fun moveAnchorHeight(moveY: Float, position: Int) {
@@ -523,7 +528,7 @@ class HelloArRenderer(val activity: ObjectPlaneActivity) : SampleRender.Renderer
             position
         )
 
-        rotate()
+        //rotate()
     }
 
     private fun rotate() {
@@ -545,7 +550,7 @@ class HelloArRenderer(val activity: ObjectPlaneActivity) : SampleRender.Renderer
         return (wrappedAnchors[anchor]?.let {
             val pose = it.anchor.pose
             floatArrayOf(pose.tx(), pose.ty(), pose.tz())
-        }) ?: null
+        })
     }
 
     private fun getAngle() {
@@ -553,7 +558,7 @@ class HelloArRenderer(val activity: ObjectPlaneActivity) : SampleRender.Renderer
 
 
     private fun showError(errorMessage: String) =
-        activity.view.snackbarHelper.showError(activity, errorMessage)
+        activity.snackbarHelper.showError(activity, errorMessage)
 }
 
 /**

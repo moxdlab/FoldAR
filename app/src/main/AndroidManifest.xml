@@ -26,17 +26,11 @@
         tools:ignore="GoogleAppIndexingWarning"
         android:dataExtractionRules="@xml/data_extraction_rules">
         <activity
-            android:name="com.example.foldAR.kotlin.cameraPlane.CameraPlaneActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.example.foldAR.kotlin.rectanglePlane.RectanglePlaneActivity"
-            android:exported="false" />
-        <activity
-            android:name="com.example.foldAR.kotlin.objectPlane.ObjectPlaneActivity"
+            android:name="com.example.foldAR.kotlin.mainActivity.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
-            android:screenOrientation="landscape"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
