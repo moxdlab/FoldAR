@@ -477,7 +477,7 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         if (firstHitResult != null) {
             // Cap the number of objects created. This avoids overloading both the
             // rendering system and ARCore.
-            if (wrappedAnchors.size >= 1) {
+            if (wrappedAnchors.size >= 2) {
                 wrappedAnchors[0].anchor.detach()
                 wrappedAnchors.removeAt(0)
             }
@@ -544,16 +544,17 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         wrappedAnchors[0] = anchor1
     }
 
-    fun getAnchorPosition(anchor: Int): FloatArray? {
+    fun getAnchorPosition(anchor: Int): FloatArray {
         val quaternion = camera.pose.rotationQuaternion
         Log.d("cameraPosition", "X: ${quaternion[0]}  Y: ${quaternion[1]} Z: ${quaternion[2]}")
-        return (wrappedAnchors[anchor]?.let {
+        return (wrappedAnchors[anchor].let {
             val pose = it.anchor.pose
             floatArrayOf(pose.tx(), pose.ty(), pose.tz())
         })
     }
 
     private fun getAngle() {
+
     }
 
 

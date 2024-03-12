@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.util.Log
-import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -22,6 +21,7 @@ import com.example.foldAR.java.samplerender.SampleRender
 import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.helloar.databinding.ActivityMainBinding
 import com.example.foldAR.kotlin.helpers.ARCoreSessionLifecycleHelper
+import com.example.foldAR.kotlin.objectPlane.ObjectPlaneFragment
 import com.example.foldAR.kotlin.renderer.HelloArRenderer
 import com.google.ar.core.Config
 import com.google.ar.core.Config.InstantPlacementMode
@@ -34,7 +34,7 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
     companion object {
-        private const val TAG = "MainActivity"
+        private const val TAG = "MainActivityTest"
     }
 
     private lateinit var navController: NavController
@@ -53,6 +53,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        _binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.nav_host_fragment, ObjectPlaneFragment()).commit()
         setupBinding()
         setupNavigation()
         setupArCoreSessionHelper()
@@ -63,7 +68,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupBinding() {
-        _binding = ActivityMainBinding.inflate(layoutInflater)
         surfaceView = findViewById(R.id.surfaceview)
         tapHelper = TapHelper(this).also { surfaceView.setOnTouchListener(it) }
     }
@@ -175,15 +179,33 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
 
+
     private fun setupSettingsButton() {
-        binding.button.apply {
-            setOnClickListener { v ->
-                PopupMenu(this.context, v).apply {
-                    setOnMenuItemClickListener { true }
-                    inflate(R.menu.settings_menu)
-                    show()
-                }
-            }
+        binding.button.setOnClickListener {
+
+            //val anchor1 = renderer.wrappedAnchors[0].anchor
+            //val anchor2 = renderer.wrappedAnchors[1].anchor
+
+            val camera1 = renderer.camera.pose.xAxis[0]
+            val camera2 = renderer.camera.pose.xAxis[1]
+            val camera3 = renderer.camera.pose.xAxis[2]
+
+            val camera4 = renderer.camera.pose.zAxis[0]
+            val camera5 = renderer.camera.pose.zAxis[1]
+            val camera6 = renderer.camera.pose.zAxis[2]
+
+            //val pos1 = anchor1.pose.xAxis[0]
+            //val pos2 = anchor1.pose.xAxis[1]
+            //val pos3 = anchor1.pose.xAxis[2]
+
+            //val pos4 = anchor2.pose.translation[0].toString()
+            //val pos5 = anchor2.pose.translation[1].toString()
+            //val pos6 = anchor2.pose.translation[2].toString()
+
+            Log.d(TAG, "CameraX: $camera1 -- $camera2 -- $camera3")
+            Log.d(TAG, "CameraZ: $camera4 -- $camera5 -- $camera6")
+
+
         }
     }
 

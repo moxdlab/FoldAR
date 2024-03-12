@@ -1,0 +1,41 @@
+Gibt die Position in Relation zur Welt in Metern an
+val anchor1 = renderer.wrappedAnchors[0].anchor
+
+val pos1 = anchor1.pose.translation[0].toString()
+val pos2 = anchor1.pose.translation[1].toString()
+val pos3 = anchor1.pose.translation[2].toString()
+
+//Gibt die Rotation in Bezug zur X-Achse an -> gilt auch für y und z
+val pos1 = anchor1.pose.xAxis[0]
+val pos2 = anchor1.pose.xAxis[1]
+val pos3 = anchor1.pose.xAxis[2]
+
+
+
+
+CameraX: 0.86079645 -- -0.49217987 -- 0.12957035
+CameraX: 0.104142815 -- -0.5027502 -- -0.85813546
+CameraX: -0.8718078 -- -0.47658575 -- -0.11321169
+CameraX: -0.0691262 -- -0.47776225 -- 0.8757651
+CameraX: 0.8781603 -- -0.43539965 -- 0.19814548
+
+
+
+CameraZ: 0.485919 -- 0.8704818 -- 0.07838422
+CameraZ: 0.057237804 -- 0.8644269 -- -0.49948978
+CameraZ: -0.47300053 -- 0.8791239 -- -0.058407012
+CameraZ: -0.0544807 -- 0.87836283 -- 0.4748792
+CameraZ: 0.42646587 -- 0.90020853 -- 0.08804175
+
+nächste Schritte:
+                  A)
+                  -Position der Kamera bestimmen
+                  -von dort aus ein imaginäres Objekt bewegen
+                  -Position nach Bewegung mit realen Objekt verrechnen
+
+                  B)
+                  -Position der Kamera bestimmen
+                  -von dort aus ein imaginäöres Objekt bewegen
+                  -Ausrichtung der Kamera auf x und z Achse bestimmen
+                  -Objekt im kreis rotieren bis ausrichtung der Kamera erreicht ist
+                  -Position nach Bewegung mit realen Objekt verrechnen

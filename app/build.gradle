@@ -48,6 +48,8 @@ android {
 }
 
 dependencies {
+
+    def nav_version = "2.7.7"
     // ARCore (Google Play Services for AR) library.
     implementation 'com.google.ar:core:1.41.0'
 
@@ -58,6 +60,7 @@ dependencies {
     implementation "androidx.navigation:navigation-dynamic-features-fragment:2.7.7"
     implementation "androidx.navigation:navigation-fragment-ktx:2.7.7"
     implementation "androidx.navigation:navigation-ui-ktx:2.7.7"
+    implementation "androidx.navigation:navigation-compose:$nav_version"
 
     implementation 'androidx.appcompat:appcompat:1.6.1'
 
