@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         setContentView(binding.root)
 
         supportFragmentManager.beginTransaction()
-            .add(R.id.nav_host_fragment, ObjectPlaneFragment()).commit()
+            .add(R.id.nav_host, ObjectPlaneFragment()).commit()
         setupBinding()
         setupNavigation()
         setupArCoreSessionHelper()
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private fun setupNavigation() {
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
         navController = navHostFragment.navController
         // Set up the action bar for use with the NavController
         NavigationUI.setupActionBarWithNavController(this, navController)
