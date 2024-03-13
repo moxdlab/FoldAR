@@ -10,7 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
 import com.example.foldAR.java.helpers.CameraPermissionHelper
 import com.example.foldAR.java.helpers.DepthSettings
 import com.example.foldAR.java.helpers.FullScreenHelper
@@ -21,7 +20,6 @@ import com.example.foldAR.java.samplerender.SampleRender
 import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.helloar.databinding.ActivityMainBinding
 import com.example.foldAR.kotlin.helpers.ARCoreSessionLifecycleHelper
-import com.example.foldAR.kotlin.objectPlane.ObjectPlaneFragment
 import com.example.foldAR.kotlin.renderer.HelloArRenderer
 import com.google.ar.core.Config
 import com.google.ar.core.Config.InstantPlacementMode
@@ -54,10 +52,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        supportFragmentManager.beginTransaction()
-            .add(R.id.nav_host, ObjectPlaneFragment()).commit()
         setupBinding()
         setupNavigation()
         setupArCoreSessionHelper()
@@ -74,14 +68,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private fun setupNavigation() {
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         navController = navHostFragment.navController
-        // Set up the action bar for use with the NavController
-        NavigationUI.setupActionBarWithNavController(this, navController)
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
     private fun setupArCoreSessionHelper() {
@@ -177,7 +165,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 this.depthSettings.setUseDepthForOcclusion(false)
             }.show()
     }
-
 
 
     private fun setupSettingsButton() {

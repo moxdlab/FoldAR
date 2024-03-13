@@ -38,6 +38,7 @@
     <string name="staticc">Static</string>
     <string name="dynamic">Dynamic</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="object_plane">Object plane</string>
+    <string name="camera_plane">Camera plane</string>
 
 </resources>

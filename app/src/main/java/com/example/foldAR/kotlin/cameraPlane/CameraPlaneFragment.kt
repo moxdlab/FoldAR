@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.helloar.databinding.FragmentCameraPlaneBinding
 import com.example.foldAR.kotlin.mainActivity.MainActivityViewModel
 
@@ -27,4 +29,16 @@ class CameraPlaneFragment : Fragment() {
         viewModelActivity = ViewModelProvider(requireActivity())[MainActivityViewModel::class.java]
         return binding.root
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        changeFragment()
+    }
+
+    private fun changeFragment(){
+        binding.button.setOnClickListener{
+            findNavController().navigate(R.id.action_cameraPlaneFragment_to_objectPlaneFragment)
+        }
+    }
+
 }
