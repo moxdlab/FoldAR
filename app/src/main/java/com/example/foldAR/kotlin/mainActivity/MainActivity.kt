@@ -168,18 +168,17 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
 
     private fun setupSettingsButton() {
-        binding.button.setOnClickListener {
 
+        binding.button.setOnClickListener {
             //val anchor1 = renderer.wrappedAnchors[0].anchor
             //val anchor2 = renderer.wrappedAnchors[1].anchor
 
-            val camera1 = renderer.camera.pose.xAxis[0]
-            val camera2 = renderer.camera.pose.xAxis[1]
-            val camera3 = renderer.camera.pose.xAxis[2]
-
-            val camera4 = renderer.camera.pose.zAxis[0]
-            val camera5 = renderer.camera.pose.zAxis[1]
-            val camera6 = renderer.camera.pose.zAxis[2]
+            //val camera1 = renderer.camera.pose.xAxis[0]
+            //val camera2 = renderer.camera.pose.xAxis[1]
+            //val camera3 = renderer.camera.pose.xAxis[2]
+            //val camera4 = renderer.camera.pose.zAxis[0]
+            //val camera5 = renderer.camera.pose.zAxis[1]
+            //val camera6 = renderer.camera.pose.zAxis[2]
 
             //val pos1 = anchor1.pose.xAxis[0]
             //val pos2 = anchor1.pose.xAxis[1]
@@ -189,10 +188,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             //val pos5 = anchor2.pose.translation[1].toString()
             //val pos6 = anchor2.pose.translation[2].toString()
 
-            Log.d(TAG, "CameraX: $camera1 -- $camera2 -- $camera3")
-            Log.d(TAG, "CameraZ: $camera4 -- $camera5 -- $camera6")
-
-
+            //Log.d(TAG, "CameraX: $camera1 -- $camera2 -- $camera3")
+            //Log.d(TAG, "CameraZ: $camera4 -- $camera5 -- $camera6")
         }
     }
 

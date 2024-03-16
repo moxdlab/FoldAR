@@ -5,6 +5,7 @@ import android.opengl.Matrix
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import com.example.foldAR.java.helpers.DisplayRotationHelper
 import com.example.foldAR.java.helpers.TrackingStateHelper
 import com.example.foldAR.java.samplerender.Framebuffer
@@ -75,7 +76,8 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         val CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES = 32
     }
 
-    lateinit var camera: Camera
+    var camera: MutableLiveData<Camera> = MutableLiveData<Camera>()
+
     lateinit var render: SampleRender
     lateinit var planeRenderer: PlaneRenderer
     lateinit var backgroundRenderer: BackgroundRenderer
@@ -256,7 +258,8 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
 
         val camera = frame.camera
 
-        this.camera = camera
+        this.camera.postValue(camera)
+
         // Update BackgroundRenderer state to match the depth settings.
         try {
             backgroundRenderer.setUseDepthVisualization(
@@ -545,18 +548,11 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
     }
 
     fun getAnchorPosition(anchor: Int): FloatArray {
-        val quaternion = camera.pose.rotationQuaternion
-        Log.d("cameraPosition", "X: ${quaternion[0]}  Y: ${quaternion[1]} Z: ${quaternion[2]}")
         return (wrappedAnchors[anchor].let {
             val pose = it.anchor.pose
             floatArrayOf(pose.tx(), pose.ty(), pose.tz())
         })
     }
-
-    private fun getAngle() {
-
-    }
-
 
     private fun showError(errorMessage: String) =
         activity.snackbarHelper.showError(activity, errorMessage)

@@ -33,11 +33,23 @@ class CameraPlaneFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         changeFragment()
+        setData()
+        setObservers()
     }
 
-    private fun changeFragment(){
-        binding.button.setOnClickListener{
+    private fun setData() {
+        viewModel.setData(binding.imageMoveObjectPlane)
+    }
+
+    private fun changeFragment() {
+        binding.previous.setOnClickListener {
             findNavController().navigate(R.id.action_cameraPlaneFragment_to_objectPlaneFragment)
+        }
+    }
+
+    private fun setObservers() {
+        viewModelActivity.renderer.camera.observe(this.viewLifecycleOwner){it ->
+            binding.imageMoveObjectPlane.setImageBitmap(viewModel.mapAnchors(it, viewModelActivity.renderer.wrappedAnchors, binding.imageMoveObjectPlane))
         }
     }
 

@@ -9,22 +9,34 @@
         android:id="@+id/objectPlaneFragment"
         android:name="com.example.foldAR.kotlin.objectPlane.ObjectPlaneFragment"
         android:label="Object Plane"
-        tools:layout="@layout/fragment_object_plane" >
+        tools:layout="@layout/fragment_object_plane">
         <action
             android:id="@+id/action_objectPlaneFragment_to_cameraPlaneFragment"
             app:destination="@id/cameraPlaneFragment"
             app:popUpTo="@id/cameraPlaneFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_objectPlaneFragment_to_objectPlaneAltFragment"
+            app:destination="@id/objectPlaneAltFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraPlaneFragment"
         android:name="com.example.foldAR.kotlin.cameraPlane.CameraPlaneFragment"
         android:label="Camera Plane"
-        tools:layout="@layout/fragment_camera_plane" >
+        tools:layout="@layout/fragment_camera_plane">
         <action
             android:id="@+id/action_cameraPlaneFragment_to_objectPlaneFragment"
             app:destination="@id/objectPlaneFragment"
             app:popUpTo="@id/objectPlaneFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/objectPlaneAltFragment"
+        android:name="com.example.foldAR.kotlin.objectPlane.alt.ObjectPlaneAltFragment"
+        android:label="ObjectPlaneAltFragment"
+        tools:layout="@layout/fragment_object_plane_alt">
+        <action
+            android:id="@+id/action_objectPlaneAltFragment_to_objectPlaneFragment"
+            app:destination="@id/objectPlaneFragment" />
     </fragment>
 </navigation>

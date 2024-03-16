@@ -1,6 +1,5 @@
 package com.example.foldAR.kotlin.objectPlane
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -19,7 +18,6 @@ class ObjectPlaneFragment : Fragment() {
 
     private lateinit var viewModelActivity: MainActivityViewModel
     private val viewModel: ObjectPlaneViewModel by viewModels()
-    private val bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)
 
     private var _binding: FragmentObjectPlaneBinding? = null
     private val binding get() = _binding!!
@@ -42,9 +40,13 @@ class ObjectPlaneFragment : Fragment() {
 
     }
 
-    private fun changeFragment(){
-        binding.button.setOnClickListener{
+    private fun changeFragment() {
+        binding.next.setOnClickListener {
             findNavController().navigate(R.id.action_objectPlaneFragment_to_cameraPlaneFragment)
+        }
+
+        binding.previous.setOnClickListener {
+            findNavController().navigate(R.id.action_objectPlaneFragment_to_objectPlaneAltFragment)
         }
     }
 
@@ -65,7 +67,7 @@ class ObjectPlaneFragment : Fragment() {
 
     private fun selectMovementMethod(
         viewImage: View,
-        action1: (MotionEvent, View, Bitmap) -> Unit,
+        action1: (MotionEvent, View) -> Unit,
         action2: (ChangeAnchor) -> Unit,
     ) {
         viewImage.setOnTouchListener { view, event ->
@@ -75,12 +77,12 @@ class ObjectPlaneFragment : Fragment() {
                         viewModel.setAnchorsPos(
                             viewModelActivity
                                 .renderer
-                                .getAnchorPosition(viewModelActivity.anchorPos)!!
+                                .getAnchorPosition(viewModelActivity.anchorPos)
                         )
                     }
 
                     MotionEvent.ACTION_MOVE -> {
-                        action1(event, view, bitmap)
+                        action1(event, view)
                         action2(viewModel.changeAnchor)
                     }
                 }
