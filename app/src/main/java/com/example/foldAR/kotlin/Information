@@ -39,3 +39,10 @@ nächste Schritte:
                   -Ausrichtung der Kamera auf x und z Achse bestimmen
                   -Objekt im kreis rotieren bis ausrichtung der Kamera erreicht ist
                   -Position nach Bewegung mit realen Objekt verrechnen
+
+                  C)
+                  -Daten des Objekts auf ein zweites Objekt übertragen aber dieses nur virtuell nutzen
+                  -Rotation des zweiten Objektes gleich der Rotation der Kamera setzen
+                  -Zweites Objekt bewegen
+                  -Erstem Objekt die Koordinaten des zweiten Objekts geben
+                  -Zweites Objekt löschen
