@@ -5,13 +5,10 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.view.View
-import android.widget.ImageView
 import androidx.lifecycle.ViewModel
 import com.example.foldAR.kotlin.renderer.WrappedAnchor
 import com.google.ar.core.Camera
 import kotlin.math.abs
-import kotlin.math.cos
-import kotlin.math.sin
 
 //range +-2.5m on x/z axis
 const val range = 2.5f
@@ -27,9 +24,9 @@ class CameraPlaneViewModel : ViewModel() {
     private var scaleZ: Float? = null
 
 
-    var canvasPosX = 250f
-    var canVasPosY = 0f
-    var canvasPosZ = 250f
+    private var canvasPosX = 0f
+    private var canVasPosY = 0f
+    private var canvasPosZ = 0f
 
     fun setData(view: View) {
         scaleX = bitmap.width.toFloat() / view.width
@@ -41,14 +38,15 @@ class CameraPlaneViewModel : ViewModel() {
     fun mapAnchors(
         camera: Camera,
         wrappedAnchors: MutableList<WrappedAnchor>,
-        view: ImageView,
     ): Bitmap {
+
+        //Camera position in flat space
         val camPosX = camera.pose.translation[0]
         val camPosZ = camera.pose.translation[2]
 
         bitmap.eraseColor(Color.TRANSPARENT) //Todo mby use BitmapFactory
         for (i in wrappedAnchors) {
-            //x,y,z
+            //Object pose in flat space
             val poseX = i.anchor.pose.tx()
             val poseZ = i.anchor.pose.tz()
 
@@ -65,33 +63,12 @@ class CameraPlaneViewModel : ViewModel() {
         poseZ: Float,
         camera: Camera,
     ) {
-
-        val center = 250f
         val canvas = Canvas(bitmap)
-        canvas.drawCircle(center, center, 10f, paint)
+        val canvasPosX: Float = (poseX - camPosX) * 100 + 250
+        val canvasPosZ = (poseZ - camPosZ) * 100 + 250
 
-        val newX: Float = abs(poseX - camPosX)
-        val newZ: Float = abs(poseZ - camPosZ)
-
-        if (camPosX <= poseX)
-            canvasPosX += (newX * (setRange / range) * 100 * camera.pose.xAxis[0])
-        else
-            canvasPosX -= (newX * (setRange / range) * 100 * camera.pose.xAxis[0])
-
-        if (camPosZ <= poseZ)
-            canvasPosZ += (newZ * (setRange / range) * 100 * camera.pose.zAxis[2])
-        else
-            canvasPosZ -= (newZ * (setRange / range) * 100 * camera.pose.zAxis[2])
-
-        calculatePoints(camera)
         canvas.drawCircle(canvasPosX, canvasPosZ, 20f, paint)
     }
-
-    private fun calculatePoints(camera: Camera){
-                canvasPosX += (canvasPosZ * cos(camera.pose.xAxis[0]) - canVasPosY * sin(camera.pose.xAxis[0]))
-                canvasPosZ += (canvasPosZ * sin(camera.pose.xAxis[0]) + canVasPosY * cos(camera.pose.xAxis[0]))
-    }
-
 
     private fun isInRange(pose: Float, camPos: Float): Boolean {
         return abs(pose - camPos) > range
