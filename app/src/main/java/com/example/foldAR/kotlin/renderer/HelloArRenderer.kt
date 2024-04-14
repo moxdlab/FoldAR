@@ -70,7 +70,7 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         // camera. Use larger values for experiences where the user will likely be standing and trying
         // to
         // place an object on the ground or floor in front of them.
-        val APPROXIMATE_DISTANCE_METERS = 1.0f
+        val APPROXIMATE_DISTANCE_METERS = 0.6f
 
         val CUBEMAP_RESOLUTION = 16
         val CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES = 32

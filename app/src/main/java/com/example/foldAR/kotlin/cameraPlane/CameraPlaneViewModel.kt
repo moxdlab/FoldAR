@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModel
 import com.example.foldAR.kotlin.renderer.WrappedAnchor
@@ -22,11 +23,6 @@ class CameraPlaneViewModel : ViewModel() {
 
     private var scaleX: Float? = null
     private var scaleZ: Float? = null
-
-
-    private var canvasPosX = 0f
-    private var canVasPosY = 0f
-    private var canvasPosZ = 0f
 
     fun setData(view: View) {
         scaleX = bitmap.width.toFloat() / view.width
@@ -64,10 +60,16 @@ class CameraPlaneViewModel : ViewModel() {
         camera: Camera,
     ) {
         val canvas = Canvas(bitmap)
-        val canvasPosX: Float = (poseX - camPosX) * 100 + 250
-        val canvasPosZ = (poseZ - camPosZ) * 100 + 250
 
-        canvas.drawCircle(canvasPosX, canvasPosZ, 20f, paint)
+        //Z axis is inverted in a bitmap
+        val canvasPosX: Float =
+            ((poseX - camPosX) * 100 * camera.pose.zAxis[0]) - ((poseZ - camPosZ) * 100 * camera.pose.zAxis[2]) + 250
+        val canvasPosZ: Float =
+            ((poseX - camPosX) * 100 * camera.pose.zAxis[2]) + ((poseZ - camPosZ) * 100 * camera.pose.zAxis[0]) + 250
+
+        Log.d("cameraPosTest", "$camPosX        $camPosZ")
+
+        canvas.drawCircle(canvasPosZ, canvasPosX, 20f, paint)
     }
 
     private fun isInRange(pose: Float, camPos: Float): Boolean {
