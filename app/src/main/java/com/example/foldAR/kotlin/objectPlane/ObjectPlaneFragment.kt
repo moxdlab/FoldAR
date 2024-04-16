@@ -37,7 +37,6 @@ class ObjectPlaneFragment : Fragment() {
         setUpMoveObjectListeners()
         changeFragment()
 
-
     }
 
     private fun changeFragment() {

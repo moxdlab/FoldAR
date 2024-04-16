@@ -1,7 +1,6 @@
 package com.example.foldAR.kotlin.cameraPlane
 
 import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.util.Log
@@ -9,17 +8,22 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import com.example.foldAR.kotlin.renderer.WrappedAnchor
 import com.google.ar.core.Camera
-import kotlin.math.abs
-
-//range +-2.5m on x/z axis
-const val range = 2.5f
+import kotlin.math.atan2
+import kotlin.math.pow
 
 //Todo make cleaner
 class CameraPlaneViewModel : ViewModel() {
-    private var setRange = 2.5f //change to get other scale on map
+
+    companion object {
+        private const val range = 2.5f
+        private val Tag = "ViewModelTAG"
+    }
 
     private val bitmap: Bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)
-    private var paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    private var paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.RED
+        strokeWidth = 2f
+    }
 
     private var scaleX: Float? = null
     private var scaleZ: Float? = null
@@ -27,30 +31,32 @@ class CameraPlaneViewModel : ViewModel() {
     fun setData(view: View) {
         scaleX = bitmap.width.toFloat() / view.width
         scaleZ = bitmap.height.toFloat() / view.height
-        paint.color = Color.RED
-        paint.strokeWidth = 2f
     }
 
     fun mapAnchors(
         camera: Camera,
         wrappedAnchors: MutableList<WrappedAnchor>,
     ): Bitmap {
-
-        //Camera position in flat space
-        val camPosX = camera.pose.translation[0]
-        val camPosZ = camera.pose.translation[2]
-
         bitmap.eraseColor(Color.TRANSPARENT) //Todo mby use BitmapFactory
-        for (i in wrappedAnchors) {
-            //Object pose in flat space
-            val poseX = i.anchor.pose.tx()
-            val poseZ = i.anchor.pose.tz()
 
-            if (!(isInRange(poseX, camPosX) || isInRange(poseZ, camPosZ)))
-                drawPoint(camPosX, camPosZ, poseX, poseZ, camera)
+        val camPose = camera.pose.translation
+        val (camPosX, camPosZ) = arrayOf(camPose[0], camPose[2])
+
+        // Ignore the roll and pitch (tilt), and only use the yaw for the 2D rotation
+        val rotationPlane = quaternionToYaw(camera.pose.rotationQuaternion)
+
+        wrappedAnchors.forEach {
+            val anchorPose = it.anchor.pose
+            val (anchorPoseX, anchorPoseZ) = arrayOf(anchorPose.tx(), anchorPose.tz())
+
+            if (isInRange(anchorPoseX, anchorPoseZ, camPosX, camPosZ)) {
+                drawPoint(camPosX, camPosZ, anchorPoseX, anchorPoseZ, camera, rotationPlane)
+            }
         }
+
         return bitmap
     }
+
 
     private fun drawPoint(
         camPosX: Float,
@@ -58,21 +64,23 @@ class CameraPlaneViewModel : ViewModel() {
         poseX: Float,
         poseZ: Float,
         camera: Camera,
+        rotation: Float
     ) {
-        val canvas = Canvas(bitmap)
+        Log.d(Tag, rotation.toString())
 
-        //Z axis is inverted in a bitmap
-        val canvasPosX: Float =
-            ((poseX - camPosX) * 100 * camera.pose.zAxis[0]) - ((poseZ - camPosZ) * 100 * camera.pose.zAxis[2]) + 250
-        val canvasPosZ: Float =
-            ((poseX - camPosX) * 100 * camera.pose.zAxis[2]) + ((poseZ - camPosZ) * 100 * camera.pose.zAxis[0]) + 250
-
-        Log.d("cameraPosTest", "$camPosX        $camPosZ")
-
-        canvas.drawCircle(canvasPosZ, canvasPosX, 20f, paint)
     }
 
-    private fun isInRange(pose: Float, camPos: Float): Boolean {
-        return abs(pose - camPos) > range
+    private fun quaternionToYaw(quaternion: FloatArray): Float {
+        val (w, x, y, z) = quaternion
+        val sinyCosp = 2 * (w * z + x * y)
+        val cosyCosp = 1 - 2 * (y * y + z * z)
+        val yaw = atan2(sinyCosp, cosyCosp)
+        return Math.toDegrees(yaw.toDouble()).toFloat()
+    }
+
+
+    private fun isInRange(poseX: Float, poseZ: Float, camPosX: Float, camPosZ: Float): Boolean {
+        val distance = kotlin.math.sqrt((poseX - camPosX).pow(2) + (poseZ - camPosZ).pow(2))
+        return distance < range
     }
 }

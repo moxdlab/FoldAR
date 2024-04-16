@@ -48,8 +48,13 @@ class CameraPlaneFragment : Fragment() {
     }
 
     private fun setObservers() {
-        viewModelActivity.renderer.camera.observe(this.viewLifecycleOwner){
-            binding.imageMoveObjectPlane.setImageBitmap(viewModel.mapAnchors(it, viewModelActivity.renderer.wrappedAnchors))
+        viewModelActivity.renderer.camera.observe(this.viewLifecycleOwner) {
+            binding.imageMoveObjectPlane.setImageBitmap(
+                viewModel.mapAnchors(
+                    it,
+                    viewModelActivity.renderer.wrappedAnchors
+                )
+            )
         }
     }
 

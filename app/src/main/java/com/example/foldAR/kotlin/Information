@@ -41,8 +41,23 @@ nächste Schritte:
                   -Position nach Bewegung mit realen Objekt verrechnen
 
 
+
+${camera.pose.yAxis[1]} tilt left/right -> normal 0 //${camera.pose.xAxis[1]} tilt left/right normal -1
+${camera.pose.zAxis[1]}  tilt front/back -> normal 0 //${camera.pose.xAxis[1]} tilt front/back#ä normal -1
 Clockwise   xAchse      zAchse
 0°           1  0  0     0  0  1
 90°          0  0  1    -1  0  0
 180°        -1  0  0     0  0 -1
 270°         0  0 -1     1  0  0
+
+if(x+ && z+)
+    0° - 90°
+
+if(x+ && z+)
+    90° - 180°
+
+if(x+ && z+)
+    180° - 270°
+
+if(x+ && z+)
+    270° - 0°
