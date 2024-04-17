@@ -504,13 +504,11 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
     }
 
     private fun moveAnchor(moveX: Float, moveY: Float, moveZ: Float, position: Int) {
-        if (wrappedAnchors.isNotEmpty()) { //Todo crashes if no anchor´s found
+        wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
             val pose = Pose.makeTranslation(moveX, moveY, moveZ)
             val newAnchor =
                 WrappedAnchor(session!!.createAnchor(pose), wrappedAnchors[position].trackable)
             wrappedAnchors[position] = newAnchor
-            val quaternion = newAnchor.anchor.pose.rotationQuaternion
-            Log.d("anchorRotation", "X: ${quaternion[0]}  Y: ${quaternion[1]} Z: ${quaternion[2]}")
         }
     }
 
@@ -534,18 +532,7 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         //rotate()
     }
 
-    private fun rotate() {
-        val anchor = wrappedAnchors[0]
-        val pose = anchor.anchor.pose
-        val pose1 = Pose.makeRotation(
-            pose.qx(),
-            2f,
-            pose.qz(),
-            pose.qw()
-        )
-        val anchor1 = WrappedAnchor(session!!.createAnchor(pose1), anchor.trackable)
-        wrappedAnchors[0] = anchor1
-    }
+    private fun rotate() {}
 
     fun getAnchorPosition(anchor: Int): FloatArray {
         return (wrappedAnchors[anchor].let {

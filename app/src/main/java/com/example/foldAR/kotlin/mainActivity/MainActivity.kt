@@ -60,6 +60,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         setupRenderer()
         setupSettings()
         setupSettingsButton()
+        setObservers()
+    }
+
+    private fun setObservers() {
+        renderer.camera.observe(this){
+
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -170,28 +177,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private fun setupSettingsButton() {
         val button = findViewById<Button>(R.id.button)
-        button.setOnClickListener {
-            val anchor1 = renderer.wrappedAnchors[0].anchor
-            //val anchor2 = renderer.wrappedAnchors[1].anchor
-
-            val camera1 = renderer.camera.value!!.pose.xAxis[0]
-            val camera2 = renderer.camera.value!!.pose.xAxis[1]
-            val camera3 = renderer.camera.value!!.pose.xAxis[2]
-            val camera4 = renderer.camera.value!!.pose.zAxis[0]
-            val camera5 = renderer.camera.value!!.pose.zAxis[1]
-            val camera6 = renderer.camera.value!!.pose.zAxis[2]
-
-            //val pos1 = anchor1.pose.xAxis[0]
-            //val pos2 = anchor1.pose.xAxis[1]
-            //val pos3 = anchor1.pose.xAxis[2]
-
-            //val pos4 = anchor1.pose.zAxis[0]
-            //val pos5 = anchor1.pose.zAxis[1]
-            //val pos6 = anchor1.pose.zAxis[2]
-
-            Log.d(TAG, "xAxis: x: $camera1     y: $camera2    z: $camera3")
-            Log.d(TAG, "zAxis: x: $camera4     y: $camera5    z: $camera6")
-        }
     }
 
     override fun onResume() {

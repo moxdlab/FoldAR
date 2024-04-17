@@ -10,16 +10,23 @@ class MainActivityViewModel : ViewModel() {
     private lateinit var _renderer: HelloArRenderer
     val renderer get() = _renderer
 
-    fun setRenderer(renderer: HelloArRenderer){
+    fun setRenderer(renderer: HelloArRenderer) {
         _renderer = renderer
     }
 
     fun changeAnchorsPlane(changeAnchor: ChangeAnchor) {
-        renderer.moveAnchorPlane(changeAnchor.newX, changeAnchor.newZ, 0) //Todo choose position from list
+        renderer.moveAnchorPlane(
+            changeAnchor.newX,
+            changeAnchor.newZ,
+            0
+        ) //Todo choose position from list
     }
 
     fun changeAnchorsHeight(changeAnchor: ChangeAnchor) {
         renderer.moveAnchorHeight(changeAnchor.newY, 0)
     }
 
+    fun changeAnchorsPlane1(position: Array<Float>) {
+        renderer.moveAnchorPlane(position[0], position[1], 0)
+    }
 }

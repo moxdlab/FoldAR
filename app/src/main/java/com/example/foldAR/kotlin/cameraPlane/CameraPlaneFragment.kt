@@ -1,7 +1,9 @@
 package com.example.foldAR.kotlin.cameraPlane
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -35,6 +37,7 @@ class CameraPlaneFragment : Fragment() {
         changeFragment()
         setData()
         setObservers()
+        moveObject()
     }
 
     private fun setData() {
@@ -57,5 +60,25 @@ class CameraPlaneFragment : Fragment() {
             )
         }
     }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun moveObject() {
+        val image = binding.imageMoveObjectPlane
+
+        image.setOnTouchListener { view, event ->
+            viewModelActivity.renderer.wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
+                when (event.action) {
+                    MotionEvent.ACTION_MOVE -> {
+                        viewModelActivity.changeAnchorsPlane1(viewModel.moveAnchors(event, view))
+                    }
+                }
+            }
+
+            view.performClick()
+            true
+        }
+
+    }
+
 
 }
