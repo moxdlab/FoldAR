@@ -18,9 +18,11 @@ class ChangeAnchor {
     private var scaleFactor: Int = 500
     private var anchor: FloatArray? = null
 
+    private var rotation = 0f
     private var distanceX = 0f
     private var distanceZ = 0f
     private var distanceY = 0f
+
 
     //returns the new anchors specific value plus moved distance
     val newX get() = anchor?.get(0)?.plus(calculateNewPosition(distanceX)) ?: 0f
@@ -32,7 +34,7 @@ class ChangeAnchor {
         return (value - offset).coerceIn(-offset, offset)
     }
 
-    private fun calculateNewPosition(distance: Float) = distance / scaleFactor
+    private fun calculateNewPosition(distance: Float) = distance / offset
 
     private fun calculatePointsPlane(x: Float, y: Float) {
         distanceX = calculatePoints(x)
@@ -41,7 +43,14 @@ class ChangeAnchor {
     }
 
     //get touch value and normalize it to the bitmaps size
-    fun getNewPosition(event: MotionEvent, view: View, bitmap: Bitmap, anchorPos: FloatArray, rotation: Float) {
+    fun getNewPosition(
+        event: MotionEvent,
+        view: View,
+        bitmap: Bitmap,
+        anchorPos: FloatArray,
+        rotation: Float
+    ) {
+        this.rotation = rotation
         anchor = anchorPos
         val scaleFactorX = bitmap.width.toFloat() / view.width
         val scaleFactorY = bitmap.height.toFloat() / view.height
