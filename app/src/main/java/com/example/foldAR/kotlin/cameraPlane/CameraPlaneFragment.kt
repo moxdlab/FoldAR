@@ -35,13 +35,8 @@ class CameraPlaneFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         changeFragment()
-        setData()
         setObservers()
         moveObject()
-    }
-
-    private fun setData() {
-        viewModel.setData(binding.imageMoveObjectPlane)
     }
 
     private fun changeFragment() {
@@ -55,7 +50,8 @@ class CameraPlaneFragment : Fragment() {
             binding.imageMoveObjectPlane.setImageBitmap(
                 viewModel.mapAnchors(
                     it,
-                    viewModelActivity.renderer.wrappedAnchors
+                    viewModelActivity.renderer.wrappedAnchors,
+                    viewModelActivity.renderer.refreshAngle()
                 )
             )
         }
@@ -69,7 +65,12 @@ class CameraPlaneFragment : Fragment() {
             viewModelActivity.renderer.wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
                 when (event.action) {
                     MotionEvent.ACTION_MOVE -> {
-                        viewModelActivity.changeAnchorsPlane1(viewModel.moveAnchors(event, view))
+                        viewModelActivity.changeAnchorsPlane1(
+                            viewModel.moveAnchors(
+                                event,
+                                binding.imageMoveObjectPlane
+                            )
+                        )
                     }
                 }
             }

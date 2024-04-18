@@ -36,7 +36,7 @@ class ObjectPlaneFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpMoveObjectListeners()
         changeFragment()
-
+//        setObservers()
     }
 
     private fun changeFragment() {
@@ -49,24 +49,20 @@ class ObjectPlaneFragment : Fragment() {
         }
     }
 
-
     private fun setUpMoveObjectListeners() {
         selectMovementMethod(
             binding.imageMoveObjectPlane,
-            viewModel::changeAnchorsPlane,
             viewModelActivity::changeAnchorsPlane
         )
 
         selectMovementMethod(
             binding.imageMoveObjectHeight,
-            viewModel::changeAnchorsHeight,
             viewModelActivity::changeAnchorsHeight
         )
     }
 
     private fun selectMovementMethod(
         viewImage: View,
-        action1: (MotionEvent, View) -> Unit,
         action2: (ChangeAnchor) -> Unit,
     ) {
         viewImage.setOnTouchListener { view, event ->
@@ -81,7 +77,7 @@ class ObjectPlaneFragment : Fragment() {
                     }
 
                     MotionEvent.ACTION_MOVE -> {
-                        action1(event, view)
+                        viewModel.changeAnchorPosition(event, view, viewModelActivity.renderer.refreshAngle())
                         action2(viewModel.changeAnchor)
                     }
                 }

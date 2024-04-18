@@ -10,6 +10,9 @@ class MainActivityViewModel : ViewModel() {
     private lateinit var _renderer: HelloArRenderer
     val renderer get() = _renderer
 
+    private var _rotation: Float? = null
+    val rotation get() = _rotation
+
     fun setRenderer(renderer: HelloArRenderer) {
         _renderer = renderer
     }

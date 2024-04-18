@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
@@ -59,14 +58,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         setupArCoreSessionHelper()
         setupRenderer()
         setupSettings()
-        setupSettingsButton()
-        setObservers()
-    }
-
-    private fun setObservers() {
-        renderer.camera.observe(this){
-
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -173,10 +164,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
             }.setNegativeButton(R.string.button_text_disable_depth) { _, _ ->
                 this.depthSettings.setUseDepthForOcclusion(false)
             }.show()
-    }
-
-    private fun setupSettingsButton() {
-        val button = findViewById<Button>(R.id.button)
     }
 
     override fun onResume() {

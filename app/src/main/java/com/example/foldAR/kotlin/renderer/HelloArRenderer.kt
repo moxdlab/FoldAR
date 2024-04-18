@@ -37,6 +37,8 @@ import com.google.ar.core.exceptions.CameraNotAvailableException
 import com.google.ar.core.exceptions.NotYetAvailableException
 import java.io.IOException
 import java.nio.ByteBuffer
+import kotlin.math.PI
+import kotlin.math.atan2
 
 /** Renders the HelloAR application using our example Renderer. */
 class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
@@ -528,11 +530,18 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
             wrappedAnchors[position].anchor.pose.tz(),
             position
         )
-
-        //rotate()
     }
 
-    private fun rotate() {}
+    // Only use the yaw for the 2D rotation
+    fun refreshAngle(): Float {
+        val (w, x, y, z) = camera.value!!.pose.rotationQuaternion
+        val sinyCosp = 2 * (w * z + x * y)
+        val cosyCosp = 1 - 2 * (y * y + z * z)
+        val yaw = atan2(sinyCosp, cosyCosp)
+        val deg = (Math.toDegrees(yaw.toDouble()) % 360).toFloat()
+
+        return (deg / 180 * PI).toFloat()
+    }
 
     fun getAnchorPosition(anchor: Int): FloatArray {
         return (wrappedAnchors[anchor].let {
