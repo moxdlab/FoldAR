@@ -59,7 +59,7 @@ class ObjectPlaneFragment : Fragment() {
                         viewModel.setAnchorsPos(
                             viewModelActivity
                                 .renderer
-                                .getAnchorPosition(viewModelActivity.anchorPos)
+                                .getAnchorPosition(viewModelActivity.currentPosition)
                         )
                     }
 

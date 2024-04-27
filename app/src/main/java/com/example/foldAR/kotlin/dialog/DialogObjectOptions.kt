@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.example.foldAR.kotlin.adapter.ObjectAdapter
 import com.example.foldAR.kotlin.helloar.databinding.DialogObjectOptionsBinding
 import com.example.foldAR.kotlin.mainActivity.MainActivityViewModel
@@ -29,7 +29,10 @@ class DialogObjectOptions : DialogFragment() {
     override fun onStart() {
         super.onStart()
         val width = (resources.displayMetrics.widthPixels * 0.854).toInt()
-        dialog!!.window?.setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
+        dialog!!.window?.apply {
+            setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
+            setBackgroundDrawableResource(android.R.color.transparent)
+        }
     }
 
     override fun onCreateView(
@@ -44,20 +47,31 @@ class DialogObjectOptions : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        objectAdapter = ObjectAdapter()
+        setAdapter()
         bindingRecyclerViewObjects()
         setObjectObserver()
+    }
+
+    private fun setAdapter() {
+        objectAdapter = ObjectAdapter(object : ObjectAdapter.ClickListenerButton {
+            override fun onItemClicked(position: Int) {
+                objectAdapter.notifyItemChanged(viewModel.currentPosition)
+                viewModel.currentPosition = position
+                objectAdapter.notifyItemChanged(position)
+            }
+        }, viewModel)
     }
 
     private fun bindingRecyclerViewObjects() {
         binding.objectList.apply {
             adapter = objectAdapter
-            layoutManager = LinearLayoutManager(this.context)
+            layoutManager = GridLayoutManager(this.context, 1)
+            setHasFixedSize(true)
         }
     }
 
-    private fun setObjectObserver(){
-        viewModel.renderer.wrappedAnchorsLiveData.observe(this.viewLifecycleOwner){it ->
+    private fun setObjectObserver() {
+        viewModel.renderer.wrappedAnchorsLiveData.observe(this.viewLifecycleOwner) { it ->
             val list = mutableListOf<Anchor>()
             it.forEach {
                 list.add(it.anchor)
