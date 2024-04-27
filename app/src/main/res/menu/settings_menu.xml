@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/slow"
+        android:id="@+id/objectPlaneFragment"
+        android:icon="@drawable/object"
         android:title="@string/object" />
     <item
         android:id="@+id/medium"
         android:title="" />
     <item
-        android:id="@+id/fast"
-        android:title="@string/camera"/>
+        android:id="@+id/cameraPlaneFragment"
+        android:icon="@drawable/camera"
+        android:title="@string/camera" />
 </menu>

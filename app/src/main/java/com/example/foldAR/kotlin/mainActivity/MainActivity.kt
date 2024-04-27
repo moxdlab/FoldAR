@@ -10,6 +10,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.foldAR.java.helpers.CameraPermissionHelper
 import com.example.foldAR.java.helpers.DepthSettings
 import com.example.foldAR.java.helpers.FullScreenHelper
@@ -21,6 +24,7 @@ import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.helloar.databinding.ActivityMainBinding
 import com.example.foldAR.kotlin.helpers.ARCoreSessionLifecycleHelper
 import com.example.foldAR.kotlin.renderer.HelloArRenderer
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.ar.core.Config
 import com.google.ar.core.Config.InstantPlacementMode
 import com.google.ar.core.Session
@@ -67,9 +71,21 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun setupNavigation() {
+
+        val navView = findViewById<BottomNavigationView>(R.id.nav_view)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         navController = navHostFragment.navController
+
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.objectPlaneFragment, R.id.cameraPlaneFragment)
+        )
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
+        navView.menu.getItem(1).isEnabled = false
+        navView.background = null
+        supportActionBar?.hide()
     }
 
     private fun setupArCoreSessionHelper() {

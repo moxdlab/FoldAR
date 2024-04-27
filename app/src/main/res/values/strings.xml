@@ -14,7 +14,7 @@
    limitations under the License.
 -->
 <resources>
-    <string name="app_name" translatable="false">HelloAR Kotlin</string>
+    <string name="app_name" translatable="false">FoldAr</string>
     <string name="depth_use_explanation" translatable="false">When Depth is enabled on supported devices, virtual objects adapt to the environment by blending in with the real world.</string>
     <string name="button_text_enable_depth" translatable="false">Enable</string>
     <string name="button_text_disable_depth" translatable="false">Disable</string>

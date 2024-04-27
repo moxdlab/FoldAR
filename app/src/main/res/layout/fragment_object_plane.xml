@@ -22,21 +22,4 @@
         app:layout_constraintEnd_toStartOf="@id/image_move_object_plane"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageButton
-        android:id="@+id/next"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="94dp"
-        android:background="@drawable/baseline_arrow_forward_ios_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/previous"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="94dp"
-        android:background="@drawable/baseline_arrow_back_ios_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
