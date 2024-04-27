@@ -24,7 +24,6 @@ import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.helloar.databinding.ActivityMainBinding
 import com.example.foldAR.kotlin.helpers.ARCoreSessionLifecycleHelper
 import com.example.foldAR.kotlin.renderer.HelloArRenderer
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.ar.core.Config
 import com.google.ar.core.Config.InstantPlacementMode
 import com.google.ar.core.Session
@@ -34,7 +33,7 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException
 
-class MainActivity : AppCompatActivity(R.layout.activity_main) {
+class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivityTest"
     }
@@ -56,7 +55,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
-
+        setContentView(binding.root)
         setupBinding()
         setupNavigation()
         setupArCoreSessionHelper()
@@ -72,7 +71,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
     private fun setupNavigation() {
 
-        val navView = findViewById<BottomNavigationView>(R.id.nav_view)
+        val navView = binding.navView
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         navController = navHostFragment.navController
