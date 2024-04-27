@@ -20,6 +20,7 @@ import com.example.foldAR.java.helpers.InstantPlacementSettings
 import com.example.foldAR.java.helpers.SnackbarHelper
 import com.example.foldAR.java.helpers.TapHelper
 import com.example.foldAR.java.samplerender.SampleRender
+import com.example.foldAR.kotlin.dialog.DialogObjectOptions
 import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.helloar.databinding.ActivityMainBinding
 import com.example.foldAR.kotlin.helpers.ARCoreSessionLifecycleHelper
@@ -85,6 +86,10 @@ class MainActivity : AppCompatActivity() {
         navView.menu.getItem(1).isEnabled = false
         navView.background = null
         supportActionBar?.hide()
+
+        binding.fab.setOnClickListener {
+            DialogObjectOptions.newInstance().show(supportFragmentManager, "")
+        }
     }
 
     private fun setupArCoreSessionHelper() {

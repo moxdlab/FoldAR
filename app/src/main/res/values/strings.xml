@@ -42,4 +42,7 @@
     <string name="object">Object</string>
     <string name="camera">Camera</string>
 
+    <!--Dialog-->
+    <string name="delete_all">Delete ALl</string>
+
 </resources>

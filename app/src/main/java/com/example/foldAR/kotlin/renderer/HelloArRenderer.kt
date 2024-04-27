@@ -101,7 +101,8 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
     lateinit var virtualObjectAlbedoTexture: Texture
     lateinit var virtualObjectAlbedoInstantPlacementTexture: Texture
 
-    public val wrappedAnchors = mutableListOf<WrappedAnchor>()
+    val wrappedAnchors = mutableListOf<WrappedAnchor>()
+    val wrappedAnchorsLiveData = MutableLiveData<List<WrappedAnchor>>()
 
     // Environmental HDR
     lateinit var dfgTexture: Texture
@@ -479,26 +480,22 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
             }
         }
 
-        if (firstHitResult != null) {
+        if (firstHitResult != null && wrappedAnchors.size <= 5) {
             // Cap the number of objects created. This avoids overloading both the
             // rendering system and ARCore.
-            if (wrappedAnchors.size >= 2) {
-                wrappedAnchors[0].anchor.detach()
-                wrappedAnchors.removeAt(0)
-            }
+
+            //if (wrappedAnchors.size >= 5) {
+            //    wrappedAnchors[0].anchor.detach()
+            //    wrappedAnchors.removeAt(0)
+            //}
 
             // Adding an Anchor tells ARCore that it should track this position in
             // space. This anchor is created on the Plane to place the 3D model
             // in the correct position relative both to the world and to the plane.
             val anchor = WrappedAnchor(firstHitResult.createAnchor(), firstHitResult.trackable)
 
-            Log.d(
-                "anchorPosInView",
-                "Rend: ${anchor.anchor.pose.tx()} ----- ${anchor.anchor.pose.tz()}"
-            )
-
             wrappedAnchors.add(anchor)
-
+            wrappedAnchorsLiveData.postValue(wrappedAnchors)
             // For devices that support the Depth API, shows a dialog to suggest enabling
             // depth-based occlusion. This dialog needs to be spawned on the UI thread.
             activity.runOnUiThread { activity.showOcclusionDialogIfNeeded() }
