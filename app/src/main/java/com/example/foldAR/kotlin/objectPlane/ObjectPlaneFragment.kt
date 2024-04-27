@@ -1,12 +1,10 @@
 package com.example.foldAR.kotlin.objectPlane
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +16,6 @@ class ObjectPlaneFragment : Fragment() {
 
     private lateinit var viewModelActivity: MainActivityViewModel
     private val viewModel: ObjectPlaneViewModel by viewModels()
-    private val bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)
 
     private var _binding: FragmentObjectPlaneBinding? = null
     private val binding get() = _binding!!
@@ -36,35 +33,23 @@ class ObjectPlaneFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpMoveObjectListeners()
-        changeFragment()
-
-
-    }
-
-    private fun changeFragment(){
-        binding.root.setOnClickListener {
-            Toast.makeText(requireActivity(), "Click!", Toast.LENGTH_LONG).show()
-        }
     }
 
 
     private fun setUpMoveObjectListeners() {
         selectMovementMethod(
             binding.imageMoveObjectPlane,
-            viewModel::changeAnchorsPlane,
             viewModelActivity::changeAnchorsPlane
         )
 
         selectMovementMethod(
             binding.imageMoveObjectHeight,
-            viewModel::changeAnchorsHeight,
             viewModelActivity::changeAnchorsHeight
         )
     }
 
     private fun selectMovementMethod(
         viewImage: View,
-        action1: (MotionEvent, View, Bitmap) -> Unit,
         action2: (ChangeAnchor) -> Unit,
     ) {
         viewImage.setOnTouchListener { view, event ->
@@ -74,12 +59,12 @@ class ObjectPlaneFragment : Fragment() {
                         viewModel.setAnchorsPos(
                             viewModelActivity
                                 .renderer
-                                .getAnchorPosition(viewModelActivity.anchorPos)!!
+                                .getAnchorPosition(viewModelActivity.anchorPos)
                         )
                     }
 
                     MotionEvent.ACTION_MOVE -> {
-                        action1(event, view, bitmap)
+                        viewModel.changeAnchorPosition(event, view, viewModelActivity.renderer.refreshAngle())
                         action2(viewModel.changeAnchor)
                     }
                 }

@@ -10,7 +10,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.foldAR.java.helpers.CameraPermissionHelper
 import com.example.foldAR.java.helpers.DepthSettings
 import com.example.foldAR.java.helpers.FullScreenHelper
@@ -21,7 +23,6 @@ import com.example.foldAR.java.samplerender.SampleRender
 import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.helloar.databinding.ActivityMainBinding
 import com.example.foldAR.kotlin.helpers.ARCoreSessionLifecycleHelper
-import com.example.foldAR.kotlin.objectPlane.ObjectPlaneFragment
 import com.example.foldAR.kotlin.renderer.HelloArRenderer
 import com.google.ar.core.Config
 import com.google.ar.core.Config.InstantPlacementMode
@@ -32,7 +33,7 @@ import com.google.ar.core.exceptions.UnavailableDeviceNotCompatibleException
 import com.google.ar.core.exceptions.UnavailableSdkTooOldException
 import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationException
 
-class MainActivity : AppCompatActivity(R.layout.activity_main) {
+class MainActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "MainActivityTest"
     }
@@ -55,15 +56,11 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
         super.onCreate(savedInstanceState)
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        supportFragmentManager.beginTransaction()
-            .add(R.id.nav_host_fragment, ObjectPlaneFragment()).commit()
         setupBinding()
         setupNavigation()
         setupArCoreSessionHelper()
         setupRenderer()
         setupSettings()
-        setupSettingsButton()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -73,15 +70,21 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
     }
 
     private fun setupNavigation() {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
-        navController = navHostFragment.navController
-        // Set up the action bar for use with the NavController
-        NavigationUI.setupActionBarWithNavController(this, navController)
-    }
 
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
+        val navView = binding.navView
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        navController = navHostFragment.navController
+
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.objectPlaneFragment, R.id.cameraPlaneFragment)
+        )
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
+        navView.menu.getItem(1).isEnabled = false
+        navView.background = null
+        supportActionBar?.hide()
     }
 
     private fun setupArCoreSessionHelper() {
@@ -177,38 +180,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
                 this.depthSettings.setUseDepthForOcclusion(false)
             }.show()
     }
-
-
-
-    private fun setupSettingsButton() {
-        binding.button.setOnClickListener {
-
-            //val anchor1 = renderer.wrappedAnchors[0].anchor
-            //val anchor2 = renderer.wrappedAnchors[1].anchor
-
-            val camera1 = renderer.camera.pose.xAxis[0]
-            val camera2 = renderer.camera.pose.xAxis[1]
-            val camera3 = renderer.camera.pose.xAxis[2]
-
-            val camera4 = renderer.camera.pose.zAxis[0]
-            val camera5 = renderer.camera.pose.zAxis[1]
-            val camera6 = renderer.camera.pose.zAxis[2]
-
-            //val pos1 = anchor1.pose.xAxis[0]
-            //val pos2 = anchor1.pose.xAxis[1]
-            //val pos3 = anchor1.pose.xAxis[2]
-
-            //val pos4 = anchor2.pose.translation[0].toString()
-            //val pos5 = anchor2.pose.translation[1].toString()
-            //val pos6 = anchor2.pose.translation[2].toString()
-
-            Log.d(TAG, "CameraX: $camera1 -- $camera2 -- $camera3")
-            Log.d(TAG, "CameraZ: $camera4 -- $camera5 -- $camera6")
-
-
-        }
-    }
-
 
     override fun onResume() {
         super.onResume()

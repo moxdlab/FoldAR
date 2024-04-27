@@ -5,6 +5,7 @@ import android.opengl.Matrix
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import com.example.foldAR.java.helpers.DisplayRotationHelper
 import com.example.foldAR.java.helpers.TrackingStateHelper
 import com.example.foldAR.java.samplerender.Framebuffer
@@ -36,6 +37,8 @@ import com.google.ar.core.exceptions.CameraNotAvailableException
 import com.google.ar.core.exceptions.NotYetAvailableException
 import java.io.IOException
 import java.nio.ByteBuffer
+import kotlin.math.PI
+import kotlin.math.atan2
 
 /** Renders the HelloAR application using our example Renderer. */
 class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
@@ -69,13 +72,14 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         // camera. Use larger values for experiences where the user will likely be standing and trying
         // to
         // place an object on the ground or floor in front of them.
-        val APPROXIMATE_DISTANCE_METERS = 1.0f
+        val APPROXIMATE_DISTANCE_METERS = 0.6f
 
         val CUBEMAP_RESOLUTION = 16
         val CUBEMAP_NUMBER_OF_IMPORTANCE_SAMPLES = 32
     }
 
-    lateinit var camera: Camera
+    var camera: MutableLiveData<Camera> = MutableLiveData<Camera>()
+
     lateinit var render: SampleRender
     lateinit var planeRenderer: PlaneRenderer
     lateinit var backgroundRenderer: BackgroundRenderer
@@ -256,7 +260,8 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
 
         val camera = frame.camera
 
-        this.camera = camera
+        this.camera.postValue(camera)
+
         // Update BackgroundRenderer state to match the depth settings.
         try {
             backgroundRenderer.setUseDepthVisualization(
@@ -501,13 +506,11 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
     }
 
     private fun moveAnchor(moveX: Float, moveY: Float, moveZ: Float, position: Int) {
-        if (wrappedAnchors.isNotEmpty()) { //Todo crashes if no anchor´s found
+        wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
             val pose = Pose.makeTranslation(moveX, moveY, moveZ)
             val newAnchor =
                 WrappedAnchor(session!!.createAnchor(pose), wrappedAnchors[position].trackable)
             wrappedAnchors[position] = newAnchor
-            val quaternion = newAnchor.anchor.pose.rotationQuaternion
-            Log.d("anchorRotation", "X: ${quaternion[0]}  Y: ${quaternion[1]} Z: ${quaternion[2]}")
         }
     }
 
@@ -527,36 +530,25 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
             wrappedAnchors[position].anchor.pose.tz(),
             position
         )
-
-        //rotate()
     }
 
-    private fun rotate() {
-        val anchor = wrappedAnchors[0]
-        val pose = anchor.anchor.pose
-        val pose1 = Pose.makeRotation(
-            pose.qx(),
-            2f,
-            pose.qz(),
-            pose.qw()
-        )
-        val anchor1 = WrappedAnchor(session!!.createAnchor(pose1), anchor.trackable)
-        wrappedAnchors[0] = anchor1
+    // Only use the yaw for the 2D rotation
+    fun refreshAngle(): Float {
+        val (w, x, y, z) = camera.value!!.pose.rotationQuaternion
+        val sinyCosp = 2 * (w * z + x * y)
+        val cosyCosp = 1 - 2 * (y * y + z * z)
+        val yaw = atan2(sinyCosp, cosyCosp)
+        val deg = (Math.toDegrees(yaw.toDouble()) % 360).toFloat()
+
+        return (deg / 180 * PI).toFloat()
     }
 
     fun getAnchorPosition(anchor: Int): FloatArray {
-        val quaternion = camera.pose.rotationQuaternion
-        Log.d("cameraPosition", "X: ${quaternion[0]}  Y: ${quaternion[1]} Z: ${quaternion[2]}")
         return (wrappedAnchors[anchor].let {
             val pose = it.anchor.pose
             floatArrayOf(pose.tx(), pose.ty(), pose.tz())
         })
     }
-
-    private fun getAngle() {
-
-    }
-
 
     private fun showError(errorMessage: String) =
         activity.snackbarHelper.showError(activity, errorMessage)
