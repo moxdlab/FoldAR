@@ -15,7 +15,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.foldAR.java.helpers.CameraPermissionHelper
 import com.example.foldAR.java.helpers.DepthSettings
-import com.example.foldAR.java.helpers.FullScreenHelper
 import com.example.foldAR.java.helpers.InstantPlacementSettings
 import com.example.foldAR.java.helpers.SnackbarHelper
 import com.example.foldAR.java.helpers.TapHelper
@@ -25,6 +24,7 @@ import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.helloar.databinding.ActivityMainBinding
 import com.example.foldAR.kotlin.helpers.ARCoreSessionLifecycleHelper
 import com.example.foldAR.kotlin.renderer.HelloArRenderer
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.ar.core.Config
 import com.google.ar.core.Config.InstantPlacementMode
 import com.google.ar.core.Session
@@ -72,13 +72,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupNavigation() {
 
-        val navView = binding.navView
+        val navView: BottomNavigationView = binding.navView
+
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
         navController = navHostFragment.navController
 
         val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.objectPlaneFragment, R.id.cameraPlaneFragment)
+            setOf(
+                R.id.objectPlaneFragment, R.id.cameraPlaneFragment
+            )
         )
 
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -166,7 +169,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus)
+//        FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus)
     }
 
     fun showOcclusionDialogIfNeeded() { //Todo

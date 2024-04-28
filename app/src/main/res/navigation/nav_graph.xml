@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/objectPlaneFragment">
+
     <fragment
         android:id="@+id/objectPlaneFragment"
         android:name="com.example.foldAR.kotlin.objectPlane.ObjectPlaneFragment"
