@@ -1,5 +1,6 @@
 package com.example.foldAR.kotlin.dialog
 
+import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.example.foldAR.kotlin.adapter.ObjectAdapter
+import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.helloar.databinding.DialogObjectOptionsBinding
+import com.example.foldAR.kotlin.helperClasses.ColorGradingDelete
+import com.example.foldAR.kotlin.helperClasses.SwipeBackgroundHelper
 import com.example.foldAR.kotlin.mainActivity.MainActivityViewModel
-import com.google.ar.core.Anchor
 
 class DialogObjectOptions : DialogFragment() {
 
@@ -25,6 +30,8 @@ class DialogObjectOptions : DialogFragment() {
 
     private lateinit var viewModel: MainActivityViewModel
     private lateinit var objectAdapter: ObjectAdapter
+
+    private var displayWidth: Int? = null
 
     override fun onStart() {
         super.onStart()
@@ -50,6 +57,13 @@ class DialogObjectOptions : DialogFragment() {
         setAdapter()
         bindingRecyclerViewObjects()
         setObjectObserver()
+
+        swipeToDelete()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        displayWidth = dialog?.window?.attributes?.width
     }
 
     private fun setAdapter() {
@@ -71,14 +85,59 @@ class DialogObjectOptions : DialogFragment() {
     }
 
     private fun setObjectObserver() {
-        viewModel.renderer.wrappedAnchorsLiveData.observe(this.viewLifecycleOwner) { it ->
-            val list = mutableListOf<Anchor>()
-            it.forEach {
-                list.add(it.anchor)
-            }
-            it.let {
-                objectAdapter.submitList(list)
-            }
+        viewModel.renderer.wrappedAnchorsLiveData.observe(this.viewLifecycleOwner) { wrappedAnchors ->
+            val anchors = wrappedAnchors.map { it.anchor }
+            objectAdapter.submitList(anchors)
         }
+    }
+
+    private fun swipeToDelete() {
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder,
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val deletedObjectIndex = viewHolder.adapterPosition
+                viewModel.deleteObject(deletedObjectIndex)
+                objectAdapter.notifyItemChanged(viewModel.currentPosition)
+            }
+
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean,
+            ) {
+                val colorGradingDelete = ColorGradingDelete(displayWidth!!)
+
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                    val viewItem = viewHolder.itemView
+                    SwipeBackgroundHelper.paintDrawCommandToStart(
+                        c,
+                        viewItem,
+                        R.drawable.trash,
+                        dX,
+                        colorGradingDelete
+                    )
+                }
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+            }
+        }).attachToRecyclerView(binding.objectList)
     }
 }

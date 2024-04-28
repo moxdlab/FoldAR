@@ -13,13 +13,22 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:backgroundTint="@color/green"
+        android:id="@+id/place_mode"
+        android:layout_width="123dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@id/delete_all"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/delete_all" />
+
+    <Button
         android:id="@+id/delete_all"
-        android:layout_width="wrap_content"
+        android:layout_width="123dp"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/red"
         android:text="@string/delete_all"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/place_mode"
         app:layout_constraintTop_toBottomOf="@id/object_list" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

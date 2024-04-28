@@ -502,6 +502,12 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         }
     }
 
+    fun deleteAnchor(deletedObjectIndex: Int){
+        wrappedAnchors[deletedObjectIndex].anchor.detach()
+        wrappedAnchors.removeAt(deletedObjectIndex)
+        wrappedAnchorsLiveData.value = wrappedAnchors
+    }
+
     private fun moveAnchor(moveX: Float, moveY: Float, moveZ: Float, position: Int) {
         wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
             val pose = Pose.makeTranslation(moveX, moveY, moveZ)
