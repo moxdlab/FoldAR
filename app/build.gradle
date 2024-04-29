@@ -52,11 +52,15 @@ dependencies {
     // ARCore (Google Play Services for AR) library.
     implementation "com.google.ar:core:1.42.0"
 
-    // androidx
+    // layouts
     implementation "androidx.appcompat:appcompat:1.6.1"
     implementation "androidx.constraintlayout:constraintlayout:2.2.0-alpha13"
+
+    //lifecycle
     implementation "androidx.lifecycle:lifecycle-common-java8:2.7.0"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.7.0"
+
+    //navigation
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -28,7 +29,8 @@ class DialogObjectOptions : DialogFragment() {
     private var _binding: DialogObjectOptionsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: MainActivityViewModel
+    private lateinit var viewModelMainActivity: MainActivityViewModel
+    private  val viewModel: DialogOptionsViewModel by viewModels()
     private lateinit var objectAdapter: ObjectAdapter
 
     private var displayWidth: Int? = null
@@ -47,7 +49,7 @@ class DialogObjectOptions : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        viewModel = ViewModelProvider(requireActivity())[MainActivityViewModel::class.java]
+        viewModelMainActivity = ViewModelProvider(requireActivity())[MainActivityViewModel::class.java]
         _binding = DialogObjectOptionsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -57,7 +59,7 @@ class DialogObjectOptions : DialogFragment() {
         setAdapter()
         bindingRecyclerViewObjects()
         setObjectObserver()
-
+        setSliderObserver()
         swipeToDelete()
     }
 
@@ -69,11 +71,11 @@ class DialogObjectOptions : DialogFragment() {
     private fun setAdapter() {
         objectAdapter = ObjectAdapter(object : ObjectAdapter.ClickListenerButton {
             override fun onItemClicked(position: Int) {
-                objectAdapter.notifyItemChanged(viewModel.currentPosition)
-                viewModel.currentPosition = position
+                objectAdapter.notifyItemChanged(viewModelMainActivity.currentPosition)
+                viewModelMainActivity.setPosition(position)
                 objectAdapter.notifyItemChanged(position)
             }
-        }, viewModel)
+        }, viewModelMainActivity)
     }
 
     private fun bindingRecyclerViewObjects() {
@@ -85,9 +87,14 @@ class DialogObjectOptions : DialogFragment() {
     }
 
     private fun setObjectObserver() {
-        viewModel.renderer.wrappedAnchorsLiveData.observe(this.viewLifecycleOwner) { wrappedAnchors ->
-            val anchors = wrappedAnchors.map { it.anchor }
-            objectAdapter.submitList(anchors)
+        viewModelMainActivity.renderer.wrappedAnchorsLiveData.observe(this.viewLifecycleOwner) { wrappedAnchors ->
+            objectAdapter.submitList(viewModel.getList(wrappedAnchors))
+        }
+    }
+
+    private fun setSliderObserver() {
+        binding.slider.addOnChangeListener { slider, value, fromUser ->
+            viewModelMainActivity.setScale(value)
         }
     }
 
@@ -102,9 +109,8 @@ class DialogObjectOptions : DialogFragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val deletedObjectIndex = viewHolder.adapterPosition
-                viewModel.deleteObject(deletedObjectIndex)
-                objectAdapter.notifyItemChanged(viewModel.currentPosition)
+                viewModelMainActivity.deleteObject(viewHolder.adapterPosition)
+                objectAdapter.notifyItemChanged(viewModelMainActivity.currentPosition)
             }
 
             override fun onChildDraw(

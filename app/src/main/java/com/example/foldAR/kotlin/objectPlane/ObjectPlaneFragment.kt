@@ -39,7 +39,7 @@ class ObjectPlaneFragment : Fragment() {
     private fun setUpMoveObjectListeners() {
         selectMovementMethod(
             binding.imageMoveObjectPlane,
-            viewModelActivity::changeAnchorsPlane
+            viewModelActivity::changeAnchorsPlaneObject
         )
 
         selectMovementMethod(

@@ -57,7 +57,7 @@ class CameraPlaneFragment : Fragment() {
             viewModelActivity.renderer.wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
                 when (event.action) {
                     MotionEvent.ACTION_MOVE -> {
-                        viewModelActivity.changeAnchorsPlane1(
+                        viewModelActivity.changeAnchorsPlaneCamera(
                             viewModel.moveAnchors(
                                 event,
                                 binding.imageMoveObjectPlane

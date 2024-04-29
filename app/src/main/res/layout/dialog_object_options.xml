@@ -13,10 +13,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:backgroundTint="@color/green"
         android:id="@+id/place_mode"
         android:layout_width="123dp"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/green"
         app:layout_constraintEnd_toStartOf="@id/delete_all"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/delete_all" />
@@ -30,5 +30,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/place_mode"
         app:layout_constraintTop_toBottomOf="@id/object_list" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:valueFrom="0.0"
+        android:valueTo="5.0"
+        app:layout_constraintTop_toBottomOf="@id/delete_all" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

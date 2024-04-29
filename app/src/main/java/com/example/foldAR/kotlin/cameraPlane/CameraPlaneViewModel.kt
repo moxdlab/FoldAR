@@ -84,7 +84,7 @@ class CameraPlaneViewModel : ViewModel() {
     }
 
     //Todo check if anchor == camera is centered
-    fun moveAnchors(event: MotionEvent, view: View): Array<Float> {
+    fun moveAnchors(event: MotionEvent, view: View): Pair<Float, Float> {
 
         val scaleFactorX = bitmap.width.toFloat() / view.width
         val scaleFactorY = bitmap.height.toFloat() / view.height
@@ -99,6 +99,6 @@ class CameraPlaneViewModel : ViewModel() {
         val z = (-sin(rotation) * newX + cos(rotation) * newZ) / 100
 
 
-        return arrayOf(-x, -z)
+        return Pair(x, z)
     }
 }
