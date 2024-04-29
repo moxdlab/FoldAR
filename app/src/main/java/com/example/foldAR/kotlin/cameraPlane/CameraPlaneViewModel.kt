@@ -13,6 +13,11 @@ import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
 
+/** Initially facing towards negative z. Thus swapping left/right and front/behind.
+ * Because a bitmaps origin is in the upper left, it need to be centered and the x-axis needs to be swapped.
+ * No need to swap the z-axis, because towards top is already negative.
+ * Because the bitmap has a size of 500x500, the points drawn and moved need to be normalized to meters.
+ * */
 class CameraPlaneViewModel : ViewModel() {
 
     companion object {
@@ -43,6 +48,7 @@ class CameraPlaneViewModel : ViewModel() {
             _range = range
     }
 
+    //map the available objects onto the bitmap
     fun mapAnchors(
         camera: Camera,
         wrappedAnchors: MutableList<WrappedAnchor>,
@@ -67,7 +73,7 @@ class CameraPlaneViewModel : ViewModel() {
         return bitmap
     }
 
-
+    /** Draw the point by rotating it by the phones yaw and adding the camera coordinates*/
     private fun drawPoint(
         poseX: Float,
         poseZ: Float,
@@ -89,12 +95,15 @@ class CameraPlaneViewModel : ViewModel() {
         )
     }
 
+    //checks if the point is in a circle with the radius of the designated range
     private fun isInRange(poseX: Float, poseZ: Float, camPosX: Float, camPosZ: Float): Boolean {
         val distance = kotlin.math.sqrt((poseX - camPosX).pow(2) + (poseZ - camPosZ).pow(2))
         return distance < 2.5
     }
 
-    //initial facing towards -z
+
+    /**Moving the anchor to the point clicked by rotating the point by the phones yaw and adding the cameras
+     * position to it.*/
     fun moveAnchors(event: MotionEvent, view: View): Pair<Float, Float> {
 
         val scaleFactorX = bitmap.width.toFloat() / view.width
