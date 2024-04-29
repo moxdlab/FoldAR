@@ -16,18 +16,18 @@ import kotlin.math.sin
 class CameraPlaneViewModel : ViewModel() {
 
     companion object {
-        private const val range = 2.5f
         private const val meter = 100
         private const val radius = 5f
         private const val bitmapSize = 500
         private val Tag = "ViewModelTAG"
     }
 
+    private var _range = 2.5f
+    private val range get() = _range
+
     private var camPosX = 0f
     private var camPosZ = 0f
     private var rotation: Float = 0f
-    private var scaleFactorX: Float = 0f
-    private var scaleFactorY: Float = 0f
     private var center = bitmapSize / 2
 
     private val bitmap: Bitmap =
@@ -36,6 +36,11 @@ class CameraPlaneViewModel : ViewModel() {
     private var paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.RED
         strokeWidth = 2f
+    }
+
+    fun setRange(range: Float) {
+        if (range in 1.0..5.0)
+            _range = range
     }
 
     fun mapAnchors(
@@ -69,36 +74,48 @@ class CameraPlaneViewModel : ViewModel() {
     ) {
 
         val canvas = Canvas(bitmap)
-        val newX = (poseX - camPosX) * meter
-        val newZ = (poseZ - camPosZ) * meter
+        val newX = (poseX - camPosX) * (meter)
+        val newZ = (poseZ - camPosZ) * (meter)
 
+//        1     = / 0.4
+//        2.5   = / 1
+//        5     = / 2
         val newXRotatedX = cos(rotation) * newX - sin(rotation) * newZ
         val newRotatedZ = sin(rotation) * newX + cos(rotation) * newZ
 
-        canvas.drawCircle(-newXRotatedX + center, -newRotatedZ + center, radius, paint)
+        canvas.drawCircle(
+            (-newXRotatedX + center).toFloat(),
+            (-newRotatedZ + center).toFloat(), radius, paint
+        )
     }
 
     private fun isInRange(poseX: Float, poseZ: Float, camPosX: Float, camPosZ: Float): Boolean {
         val distance = kotlin.math.sqrt((poseX - camPosX).pow(2) + (poseZ - camPosZ).pow(2))
-        return distance < range
+        return distance < 2.5
     }
 
-    //Todo check if anchor == camera is centered
+    //initial facing towards -z
     fun moveAnchors(event: MotionEvent, view: View): Pair<Float, Float> {
 
         val scaleFactorX = bitmap.width.toFloat() / view.width
         val scaleFactorY = bitmap.height.toFloat() / view.height
 
-        val pointX = (event.x * scaleFactorX) - 250
-        val pointZ = (event.y * scaleFactorY) - 250
+        val pointX = (event.x * scaleFactorX) - center
+        val pointZ = (event.y * scaleFactorY) - center
 
-        val newX = camPosX + pointX
-        val newZ = camPosZ + pointZ
+        val newX = -(pointX / (meter))
+        val newZ = (pointZ / (meter))
 
-        val x = (cos(rotation) * newX + sin(rotation) * newZ) / 100
-        val z = (-sin(rotation) * newX + cos(rotation) * newZ) / 100
+        val x1 = (cos(rotation) * newX - sin(rotation) * newZ)
+        val z1 = (sin(rotation) * newX + cos(rotation) * newZ)
 
+        val x = x1 + camPosX
+        val z = -z1 + camPosZ
 
+//    1     = * 0.4
+//    2.5   = * 1
+//    5     = * 2
+//        x = 0,4 * range
         return Pair(x, z)
     }
 }

@@ -1,5 +1,7 @@
 package com.example.foldAR.kotlin.mainActivity
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.foldAR.kotlin.anchorManipulation.ChangeAnchor
 import com.example.foldAR.kotlin.renderer.HelloArRenderer
@@ -18,12 +20,12 @@ class MainActivityViewModel : ViewModel() {
     val rotation get() = _rotation
 
 
-    private var _scale: Float = 1f
-    val scale get() = _scale
+    private var _scale: MutableLiveData<Float> = MutableLiveData<Float>(1f)
+    val scale: LiveData<Float> get() = _scale
 
 
     fun setScale(scale: Float) {
-        _scale = scale
+        _scale.value = scale
     }
 
     fun setPosition(position: Int) {

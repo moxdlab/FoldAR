@@ -47,6 +47,11 @@ class CameraPlaneFragment : Fragment() {
                 )
             )
         }
+
+        viewModelActivity.scale.observe(this.viewLifecycleOwner){
+            viewModel.setRange(it)
+        }
+
     }
 
     @SuppressLint("ClickableViewAccessibility")
