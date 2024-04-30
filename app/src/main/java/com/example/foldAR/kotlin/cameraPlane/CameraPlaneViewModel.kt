@@ -28,7 +28,10 @@ class CameraPlaneViewModel : ViewModel() {
     }
 
     private var _range = 2.5f
-    private val range get() = _range
+    private val range get() = _range * 0.4f
+
+    private var _currentPosition = 0
+    private val currentPosition get() = _currentPosition
 
     private var camPosX = 0f
     private var camPosZ = 0f
@@ -43,9 +46,19 @@ class CameraPlaneViewModel : ViewModel() {
         strokeWidth = 2f
     }
 
+    private var paintAlt = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.GREEN
+        strokeWidth = 2f
+    }
+
     fun setRange(range: Float) {
         if (range in 1.0..5.0)
             _range = range
+    }
+
+    fun setCurrentPosition(position: Int) {
+        if (position in 0..19)
+            _currentPosition = position
     }
 
     //map the available objects onto the bitmap
@@ -61,14 +74,16 @@ class CameraPlaneViewModel : ViewModel() {
 
         bitmap.eraseColor(Color.TRANSPARENT)
 
-        wrappedAnchors.forEach {
-            val anchorPose = it.anchor.pose
-            val (anchorPoseX, anchorPoseZ) = arrayOf(anchorPose.tx(), anchorPose.tz())
+        for (i in wrappedAnchors.withIndex())
 
-            if (isInRange(anchorPoseX, anchorPoseZ, camPosX, camPosZ)) {
-                drawPoint(anchorPoseX, anchorPoseZ)
+            wrappedAnchors.withIndex().forEach {
+                val anchorPose = it.value.anchor.pose
+                val (anchorPoseX, anchorPoseZ) = arrayOf(anchorPose.tx(), anchorPose.tz())
+
+                if (isInRange(anchorPoseX, anchorPoseZ, camPosX, camPosZ)) {
+                    drawPoint(anchorPoseX, anchorPoseZ, it.index)
+                }
             }
-        }
 
         return bitmap
     }
@@ -77,28 +92,28 @@ class CameraPlaneViewModel : ViewModel() {
     private fun drawPoint(
         poseX: Float,
         poseZ: Float,
+        index: Int
     ) {
 
         val canvas = Canvas(bitmap)
         val newX = (poseX - camPosX) * (meter)
         val newZ = (poseZ - camPosZ) * (meter)
 
-//        1     = / 0.4
-//        2.5   = / 1
-//        5     = / 2
-        val newXRotatedX = cos(rotation) * newX - sin(rotation) * newZ
-        val newRotatedZ = sin(rotation) * newX + cos(rotation) * newZ
+        val newRotatedX = (cos(rotation) * newX - sin(rotation) * newZ) / range
+        val newRotatedZ = (sin(rotation) * newX + cos(rotation) * newZ) / range
 
         canvas.drawCircle(
-            (-newXRotatedX + center).toFloat(),
-            (-newRotatedZ + center).toFloat(), radius, paint
+            (-newRotatedX + center),
+            (-newRotatedZ + center),
+            radius,
+            if (index == currentPosition) paintAlt else paint
         )
     }
 
     //checks if the point is in a circle with the radius of the designated range
     private fun isInRange(poseX: Float, poseZ: Float, camPosX: Float, camPosZ: Float): Boolean {
         val distance = kotlin.math.sqrt((poseX - camPosX).pow(2) + (poseZ - camPosZ).pow(2))
-        return distance < 2.5
+        return distance * 0.4 < range
     }
 
 
@@ -115,16 +130,12 @@ class CameraPlaneViewModel : ViewModel() {
         val newX = -(pointX / (meter))
         val newZ = (pointZ / (meter))
 
-        val x1 = (cos(rotation) * newX - sin(rotation) * newZ)
-        val z1 = (sin(rotation) * newX + cos(rotation) * newZ)
+        val x1 = (cos(rotation) * newX - sin(rotation) * newZ) * range
+        val z1 = (sin(rotation) * newX + cos(rotation) * newZ) * range
 
         val x = x1 + camPosX
         val z = -z1 + camPosZ
 
-//    1     = * 0.4
-//    2.5   = * 1
-//    5     = * 2
-//        x = 0,4 * range
         return Pair(x, z)
     }
 }

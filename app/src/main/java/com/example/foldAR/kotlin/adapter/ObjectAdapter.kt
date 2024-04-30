@@ -46,7 +46,7 @@ class ObjectAdapter(
             binding.apply {
                 index.text = position.toString()
 
-                if (viewModel.currentPosition == position)
+                if (viewModel.currentPosition.value == position)
                     innerLayout.setBackgroundResource(R.drawable.layout_rounded_corners)
                 else
                     innerLayout.setBackgroundColor(Color.parseColor("#232424"))

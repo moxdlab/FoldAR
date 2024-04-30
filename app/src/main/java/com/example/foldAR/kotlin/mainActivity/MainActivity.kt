@@ -92,10 +92,6 @@ class MainActivity : AppCompatActivity() {
 
         binding.fab.setOnClickListener {
             DialogObjectOptions.newInstance().show(supportFragmentManager, "")
-            Log.d(TAG, "${renderer.camera.value!!.pose.tx()}    ${renderer.camera.value!!.pose.tz()}")
-            Log.d(TAG, "${renderer.wrappedAnchors[0].anchor.pose.tx()}    ${renderer.wrappedAnchors[0].anchor.pose.tz()}")
-            Log.d(TAG, "${renderer.wrappedAnchors[1].anchor.pose.tx()}    ${renderer.wrappedAnchors[1].anchor.pose.tz()}")
-
         }
     }
 

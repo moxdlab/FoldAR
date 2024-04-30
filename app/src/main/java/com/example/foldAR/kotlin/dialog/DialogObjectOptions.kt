@@ -71,7 +71,7 @@ class DialogObjectOptions : DialogFragment() {
     private fun setAdapter() {
         objectAdapter = ObjectAdapter(object : ObjectAdapter.ClickListenerButton {
             override fun onItemClicked(position: Int) {
-                objectAdapter.notifyItemChanged(viewModelMainActivity.currentPosition)
+                objectAdapter.notifyItemChanged(viewModelMainActivity.currentPosition.value!!)
                 viewModelMainActivity.setPosition(position)
                 objectAdapter.notifyItemChanged(position)
             }
@@ -110,7 +110,7 @@ class DialogObjectOptions : DialogFragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 viewModelMainActivity.deleteObject(viewHolder.adapterPosition)
-                objectAdapter.notifyItemChanged(viewModelMainActivity.currentPosition)
+                objectAdapter.notifyItemChanged(viewModelMainActivity.currentPosition.value!!)
             }
 
             override fun onChildDraw(

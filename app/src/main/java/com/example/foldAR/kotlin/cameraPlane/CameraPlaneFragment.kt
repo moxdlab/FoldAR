@@ -7,14 +7,14 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.example.foldAR.kotlin.helloar.databinding.FragmentCameraPlaneBinding
 import com.example.foldAR.kotlin.mainActivity.MainActivityViewModel
 
 class CameraPlaneFragment : Fragment() {
 
-    private lateinit var viewModelActivity: MainActivityViewModel
+    private val viewModelActivity: MainActivityViewModel by activityViewModels()
     private val viewModel: CameraPlaneViewModel by viewModels()
 
     private var _binding: FragmentCameraPlaneBinding? = null
@@ -26,7 +26,6 @@ class CameraPlaneFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentCameraPlaneBinding.inflate(inflater, container, false)
-        viewModelActivity = ViewModelProvider(requireActivity())[MainActivityViewModel::class.java]
         return binding.root
     }
 
@@ -38,37 +37,39 @@ class CameraPlaneFragment : Fragment() {
 
 
     private fun setObservers() {
-        viewModelActivity.renderer.camera.observe(this.viewLifecycleOwner) {
+        viewModelActivity.renderer.camera.observe(viewLifecycleOwner) {
             binding.imageMoveObjectPlane.setImageBitmap(
                 viewModel.mapAnchors(
                     it,
                     viewModelActivity.renderer.wrappedAnchors,
-                    viewModelActivity.renderer.refreshAngle()
+                    viewModelActivity.renderer.refreshAngle(),
                 )
             )
         }
 
-        viewModelActivity.scale.observe(this.viewLifecycleOwner){
+        viewModelActivity.scale.observe(viewLifecycleOwner) {
             viewModel.setRange(it)
+        }
+
+        viewModelActivity.currentPosition.observe(viewLifecycleOwner) {
+            viewModel.setCurrentPosition(it)
         }
 
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun moveObject() {
-        val image = binding.imageMoveObjectPlane
 
-        image.setOnTouchListener { view, event ->
+        binding.imageMoveObjectPlane.setOnTouchListener { view, event ->
             viewModelActivity.renderer.wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
-                when (event.action) {
-                    MotionEvent.ACTION_MOVE -> {
-                        viewModelActivity.changeAnchorsPlaneCamera(
-                            viewModel.moveAnchors(
-                                event,
-                                binding.imageMoveObjectPlane
-                            )
+                if (event.action == MotionEvent.ACTION_MOVE) {
+                    viewModelActivity.changeAnchorsPlaneCamera(
+                        viewModel.moveAnchors(
+                            event,
+                            binding.imageMoveObjectPlane
                         )
-                    }
+                    )
+
                 }
             }
 
@@ -77,6 +78,4 @@ class CameraPlaneFragment : Fragment() {
         }
 
     }
-
-
 }
