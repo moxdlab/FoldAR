@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -29,8 +29,8 @@ class DialogObjectOptions : DialogFragment() {
     private var _binding: DialogObjectOptionsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModelMainActivity: MainActivityViewModel
-    private  val viewModel: DialogOptionsViewModel by viewModels()
+    private val viewModelMainActivity: MainActivityViewModel by activityViewModels()
+    private val viewModel: DialogOptionsViewModel by viewModels()
     private lateinit var objectAdapter: ObjectAdapter
 
     private var displayWidth: Int? = null
@@ -49,7 +49,6 @@ class DialogObjectOptions : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        viewModelMainActivity = ViewModelProvider(requireActivity())[MainActivityViewModel::class.java]
         _binding = DialogObjectOptionsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -93,6 +92,7 @@ class DialogObjectOptions : DialogFragment() {
     }
 
     private fun setSliderObserver() {
+        binding.slider.value = viewModelMainActivity.scale.value!!
         binding.slider.addOnChangeListener { slider, value, fromUser ->
             viewModelMainActivity.setScale(value)
         }

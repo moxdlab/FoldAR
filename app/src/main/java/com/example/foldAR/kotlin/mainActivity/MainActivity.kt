@@ -167,10 +167,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-//        FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus)
-    }
+    /* override fun onWindowFocusChanged(hasFocus: Boolean) {
+         super.onWindowFocusChanged(hasFocus)
+         FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus)
+     }*/
 
     fun showOcclusionDialogIfNeeded() { //Todo
         val session = arCoreSessionHelper.session ?: return

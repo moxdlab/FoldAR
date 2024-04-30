@@ -30,9 +30,7 @@ class ChangeAnchor {
     val newZ get() = anchor?.get(2)?.plus(calculateNewPosition(distanceZ)) ?: 0f
 
     //to center object in the bitmap and don`t only use values within it
-    private fun calculatePoints(value: Float): Float {
-        return (value - offset).coerceIn(-offset, offset)
-    }
+    private fun calculatePoints(value: Float): Float = (value - offset).coerceIn(-offset, offset)
 
     private fun calculateNewPosition(distance: Float) = distance / offset
 
