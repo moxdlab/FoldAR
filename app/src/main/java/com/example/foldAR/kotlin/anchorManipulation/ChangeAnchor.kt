@@ -4,6 +4,8 @@ package com.example.foldAR.kotlin.anchorManipulation
 import android.graphics.Bitmap
 import android.view.MotionEvent
 import android.view.View
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**To map it on the coordinate system and use a Bitmap of Size 500, 500*/
 class ChangeAnchor {
@@ -22,12 +24,13 @@ class ChangeAnchor {
     private var distanceX = 0f
     private var distanceZ = 0f
     private var distanceY = 0f
-
+    private var x1 = 0f
+    private var z1 = 0f
 
     //returns the new anchors specific value plus moved distance
-    val newX get() = anchor?.get(0)?.plus(calculateNewPosition(distanceX)) ?: 0f
+    val newX get() = anchor?.get(0)?.plus(calculateNewPosition(x1)) ?: 0f
     val newY get() = anchor?.get(1)?.minus(calculateNewPosition(distanceY)) ?: 0f
-    val newZ get() = anchor?.get(2)?.plus(calculateNewPosition(distanceZ)) ?: 0f
+    val newZ get() = anchor?.get(2)?.minus(calculateNewPosition(z1)) ?: 0f
 
     //to center object in the bitmap and don`t only use values within it
     private fun calculatePoints(value: Float): Float = (value - offset).coerceIn(-offset, offset)
@@ -35,9 +38,12 @@ class ChangeAnchor {
     private fun calculateNewPosition(distance: Float) = distance / offset
 
     private fun calculatePointsPlane(x: Float, y: Float) {
-        distanceX = calculatePoints(x)
+        distanceX = -calculatePoints(x)
         distanceY = calculatePoints(y)
         distanceZ = calculatePoints(y)
+
+        x1 = (cos(rotation) * distanceX - sin(rotation) * distanceZ)
+        z1 = (sin(rotation) * distanceX + cos(rotation) * distanceZ)
     }
 
     //get touch value and normalize it to the bitmaps size
