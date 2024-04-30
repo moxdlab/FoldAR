@@ -34,6 +34,8 @@ public final class TapHelper implements OnTouchListener {
                 return true;
               }
 
+
+
               @Override
               public boolean onDown(MotionEvent e) {
                 return true;

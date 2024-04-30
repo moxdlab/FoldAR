@@ -15,10 +15,6 @@ class MainActivityViewModel : ViewModel() {
     private var _currentPosition: MutableLiveData<Int> = MutableLiveData(0)
     val currentPosition get() = _currentPosition
 
-    private var _rotation: Float = 0f
-    val rotation get() = _rotation
-
-
     private var _scale: MutableLiveData<Float> = MutableLiveData<Float>(1f)
     val scale get() = _scale
 
