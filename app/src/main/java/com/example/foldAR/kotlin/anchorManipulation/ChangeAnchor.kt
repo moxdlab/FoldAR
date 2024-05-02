@@ -4,6 +4,7 @@ package com.example.foldAR.kotlin.anchorManipulation
 import android.graphics.Bitmap
 import android.view.MotionEvent
 import android.view.View
+import com.google.ar.core.Pose
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -14,11 +15,12 @@ class ChangeAnchor {
     companion object {
         const val offset = 250f //always half of used bitmap. I found that 500 is an acceptable size
         const val Tag = "changeAnchorTag"
+        private val bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)
     }
 
     //its bitmap.size/scaleFactor/2 in meters at the views edges
     private var scaleFactor: Int = 500
-    private var anchor: FloatArray? = null
+    private var anchor: Pose? = null
 
     private var rotation = 0f
     private var distanceX = 0f
@@ -28,9 +30,9 @@ class ChangeAnchor {
     private var z1 = 0f
 
     //returns the new anchors specific value plus moved distance
-    val newX get() = anchor?.get(0)?.plus(calculateNewPosition(x1)) ?: 0f
-    val newY get() = anchor?.get(1)?.minus(calculateNewPosition(distanceY)) ?: 0f
-    val newZ get() = anchor?.get(2)?.minus(calculateNewPosition(z1)) ?: 0f
+    val newX get() = anchor?.tx()!!.plus(calculateNewPosition(x1)) ?: 0f
+    val newY get() = anchor?.ty()?.minus(calculateNewPosition(distanceY)) ?: 0f
+    val newZ get() = anchor?.tz()?.minus(calculateNewPosition(z1)) ?: 0f
 
     //to center object in the bitmap and don`t only use values within it
     private fun calculatePoints(value: Float): Float = (value - offset).coerceIn(-offset, offset)
@@ -50,8 +52,7 @@ class ChangeAnchor {
     fun getNewPosition(
         event: MotionEvent,
         view: View,
-        bitmap: Bitmap,
-        anchorPos: FloatArray,
+        anchorPos: Pose,
         rotation: Float
     ) {
         this.rotation = rotation

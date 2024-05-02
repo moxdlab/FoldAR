@@ -1,6 +1,7 @@
 package com.example.foldAR.java.helpers;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,8 +34,6 @@ public final class TapHelper implements OnTouchListener {
                 queuedSingleTaps.offer(e);
                 return true;
               }
-
-
 
               @Override
               public boolean onDown(MotionEvent e) {

@@ -18,7 +18,6 @@ class MainActivityViewModel : ViewModel() {
     private var _scale: MutableLiveData<Float> = MutableLiveData<Float>(1f)
     val scale get() = _scale
 
-
     fun setScale(scale: Float) {
         _scale.value = scale
     }

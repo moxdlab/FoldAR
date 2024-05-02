@@ -546,13 +546,6 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         return (deg / 180 * PI).toFloat()
     }
 
-    fun getAnchorPosition(anchor: Int): FloatArray {
-        return (wrappedAnchors[anchor].let {
-            val pose = it.anchor.pose
-            floatArrayOf(pose.tx(), pose.ty(), pose.tz())
-        })
-    }
-
     private fun showError(errorMessage: String) =
         activity.snackbarHelper.showError(activity, errorMessage)
 }
