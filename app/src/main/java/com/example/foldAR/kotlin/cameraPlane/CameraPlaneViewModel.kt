@@ -30,6 +30,27 @@ class CameraPlaneViewModel : ViewModel() {
         private const val midPoint = bitmapSizeFloat / 2
         private const val radius = 5f
         private const val Tag = "ViewModelTAG"
+
+        private val  paintObjects = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.RED
+            strokeWidth = 2f
+        }
+
+        private val paintObjectChosen = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.GREEN
+            strokeWidth = 2f
+        }
+
+        private val paintAxis = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.BLUE
+            strokeWidth = 2f
+        }
+
+        private val paintGrid = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = Color.BLUE
+            strokeWidth = 1f
+        }
+
     }
 
     private var _range = 1f
@@ -58,21 +79,6 @@ class CameraPlaneViewModel : ViewModel() {
 
     private val bitmapCoordinateSystem: Bitmap =
         Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888)
-
-    private var paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.BLUE
-        strokeWidth = 1f
-    }
-
-    private var paintAlt = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.GREEN
-        strokeWidth = 2f
-    }
-
-    private var paintAxis = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.BLUE
-        strokeWidth = 2f
-    }
 
     fun setRange(range: Float) {
         if (range in Constants.sliderMin..Constants.sliderMax)
@@ -112,8 +118,16 @@ class CameraPlaneViewModel : ViewModel() {
                     }
                 }
 
-            return bitmap
+            return combineBitmaps()
         }
+    }
+
+    private fun combineBitmaps() : Bitmap{
+        val combinedBitmap = Bitmap.createBitmap(Constants.bitmapSize, Constants.bitmapSize, bitmap.config)
+        val canvas = Canvas(combinedBitmap)
+        canvas.drawBitmap(bitmapCoordinateSystem, 0f,0f, null)
+        canvas.drawBitmap(bitmap, 0f,0f,null)
+        return combinedBitmap
     }
 
     /** Draw the point by rotating it by the phones yaw and adding the camera coordinates*/
@@ -134,7 +148,7 @@ class CameraPlaneViewModel : ViewModel() {
             (-newRotatedX + center),
             (-newRotatedZ + center),
             radius,
-            if (index == currentPosition) paintAlt else paint
+            if (index == currentPosition) paintObjectChosen else paintObjects
         )
     }
 
@@ -172,10 +186,11 @@ class CameraPlaneViewModel : ViewModel() {
         bitmapCoordinateSystem.eraseColor(Color.TRANSPARENT)
         canvas = Canvas(bitmapCoordinateSystem)
 
+
         drawAxis()
         drawGrid()
 
-        return bitmapCoordinateSystem
+        return combineBitmaps()
     }
 
     private fun drawAxis() {
@@ -209,16 +224,16 @@ class CameraPlaneViewModel : ViewModel() {
         var i = 1f
         do {
             drawLine(
-                midPoint - (distance * i), 0f, midPoint - (distance * i), bitmapSizeFloat, paint
+                midPoint - (distance * i), 0f, midPoint - (distance * i), bitmapSizeFloat, paintGrid
             )
             drawLine(
-                midPoint + (distance * i), 0f, midPoint + (distance * i), bitmapSizeFloat, paint
+                midPoint + (distance * i), 0f, midPoint + (distance * i), bitmapSizeFloat, paintGrid
             )
             drawLine(
-                0f, midPoint - (distance * i), bitmapSizeFloat, midPoint - (distance * i), paint
+                0f, midPoint - (distance * i), bitmapSizeFloat, midPoint - (distance * i), paintGrid
             )
             drawLine(
-                0f, midPoint + (distance * i), bitmapSizeFloat, midPoint + (distance * i), paint
+                0f, midPoint + (distance * i), bitmapSizeFloat, midPoint + (distance * i), paintGrid
             )
 
             i++
