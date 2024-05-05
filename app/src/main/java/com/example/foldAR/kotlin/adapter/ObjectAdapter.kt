@@ -9,13 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.helloar.databinding.ItemDialogDetailBinding
 import com.example.foldAR.kotlin.mainActivity.MainActivityViewModel
+import com.example.foldAR.kotlin.renderer.WrappedAnchor
 import com.google.ar.core.Anchor
 
 class ObjectAdapter(
     private val onItemClicked: ClickListenerButton,
     private val viewModel: MainActivityViewModel,
 ) :
-    ListAdapter<Anchor, ObjectAdapter.ItemViewHolder>(DiffCallback) {
+    ListAdapter<WrappedAnchor, ObjectAdapter.ItemViewHolder>(DiffCallback) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
@@ -33,7 +34,7 @@ class ObjectAdapter(
         holder.binding.selectButton.setOnClickListener {
             onItemClicked.onItemClicked(position)
         }
-        holder.bind(current, position)
+        holder.bind(current.anchor, position)
     }
 
 
@@ -61,20 +62,20 @@ class ObjectAdapter(
     }
 
     companion object {
-        private val DiffCallback = object : DiffUtil.ItemCallback<Anchor>() {
+        private val DiffCallback = object : DiffUtil.ItemCallback<WrappedAnchor>() {
 
             override fun areItemsTheSame(
-                oldItem: Anchor,
-                newItem: Anchor,
+                oldItem: WrappedAnchor,
+                newItem: WrappedAnchor,
             ): Boolean {
-                return oldItem === newItem
+                return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(
-                oldItem: Anchor,
-                newItem: Anchor,
+                oldItem: WrappedAnchor,
+                newItem: WrappedAnchor,
             ): Boolean {
-                return oldItem == newItem
+                return oldItem.anchor == newItem.anchor
             }
         }
     }

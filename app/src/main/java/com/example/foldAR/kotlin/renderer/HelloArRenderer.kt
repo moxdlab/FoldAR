@@ -18,6 +18,7 @@ import com.example.foldAR.java.samplerender.VertexBuffer
 import com.example.foldAR.java.samplerender.arcore.BackgroundRenderer
 import com.example.foldAR.java.samplerender.arcore.PlaneRenderer
 import com.example.foldAR.java.samplerender.arcore.SpecularCubemapFilter
+import com.example.foldAR.kotlin.Constants
 import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.mainActivity.MainActivity
 import com.google.ar.core.Anchor
@@ -37,6 +38,8 @@ import com.google.ar.core.exceptions.CameraNotAvailableException
 import com.google.ar.core.exceptions.NotYetAvailableException
 import java.io.IOException
 import java.nio.ByteBuffer
+import java.util.Collections
+import java.util.UUID
 import kotlin.math.PI
 import kotlin.math.atan2
 
@@ -101,7 +104,7 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
     lateinit var virtualObjectAlbedoTexture: Texture
     lateinit var virtualObjectAlbedoInstantPlacementTexture: Texture
 
-    val wrappedAnchors = mutableListOf<WrappedAnchor>()
+    val wrappedAnchors = Collections.synchronizedList(mutableListOf<WrappedAnchor>())
     val wrappedAnchorsLiveData = MutableLiveData<List<WrappedAnchor>>()
 
     // Environmental HDR
@@ -354,7 +357,7 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         planeRenderer.drawPlanes(
             render,
             session.getAllTrackables<Plane>(Plane::class.java),
-            camera.displayOrientedPose, //Todo
+            camera.displayOrientedPose,
             projectionMatrix
         )
 
@@ -480,7 +483,7 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
             }
         }
 
-        if (firstHitResult != null && wrappedAnchors.size <= 5) {
+        if (firstHitResult != null && wrappedAnchors.size <= Constants.objectsMaxSize) {
             // Cap the number of objects created. This avoids overloading both the
             // rendering system and ARCore.
 
@@ -557,4 +560,5 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
 data class WrappedAnchor(
     val anchor: Anchor,
     val trackable: Trackable,
+    val id: UUID = UUID.randomUUID()
 )

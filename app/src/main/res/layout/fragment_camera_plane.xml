@@ -8,7 +8,6 @@
     <ImageView
         android:id="@+id/image_move_object_plane"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/coordinate_system" />
+        android:layout_height="match_parent" />
 
 </FrameLayout>

@@ -51,7 +51,6 @@ class ObjectPlaneFragment : Fragment() {
         viewImage: View,
         action2: (ChangeAnchor) -> Unit,
     ) {
-        //Todo
         viewImage.setOnTouchListener { view, event ->
             viewModelActivity.renderer.wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
                 when (event.action) {

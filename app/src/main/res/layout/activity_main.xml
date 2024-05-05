@@ -36,7 +36,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/primary"
-        android:backgroundTint="@color/primary">
+        android:backgroundTint="@color/primary"
+        app:fabCradleRoundedCornerRadius="60dp">
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/nav_view"
@@ -54,7 +55,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/refresh"
-        app:layout_anchor="@id/app_bar"
+        app:layout_anchor="@id/nav_view"
+        app:layout_anchorGravity="center"
         tools:ignore="ContentDescription" />
 
 

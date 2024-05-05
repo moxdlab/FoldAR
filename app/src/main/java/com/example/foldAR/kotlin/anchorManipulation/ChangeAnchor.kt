@@ -4,6 +4,7 @@ package com.example.foldAR.kotlin.anchorManipulation
 import android.graphics.Bitmap
 import android.view.MotionEvent
 import android.view.View
+import com.example.foldAR.kotlin.Constants
 import com.google.ar.core.Pose
 import kotlin.math.cos
 import kotlin.math.sin
@@ -15,7 +16,7 @@ class ChangeAnchor {
     companion object {
         const val offset = 250f //always half of used bitmap. I found that 500 is an acceptable size
         const val Tag = "changeAnchorTag"
-        private val bitmap = Bitmap.createBitmap(500, 500, Bitmap.Config.ARGB_8888)
+        private val bitmap = Bitmap.createBitmap(Constants.bitmapSize, Constants.bitmapSize, Bitmap.Config.ARGB_8888)
     }
 
     //its bitmap.size/scaleFactor/2 in meters at the views edges

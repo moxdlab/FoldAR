@@ -1,7 +1,10 @@
 package com.example.foldAR.kotlin.dialog
 
+import android.annotation.SuppressLint
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,9 +41,16 @@ class DialogObjectOptions : DialogFragment() {
     override fun onStart() {
         super.onStart()
         val width = (resources.displayMetrics.widthPixels * 0.854).toInt()
+
         dialog!!.window?.apply {
             setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
             setBackgroundDrawableResource(android.R.color.transparent)
+
+            val params = attributes
+            params.gravity = Gravity.TOP
+            params.y = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 125f, resources.displayMetrics).toInt()
+            attributes = params
+
         }
     }
 
@@ -60,6 +70,15 @@ class DialogObjectOptions : DialogFragment() {
         setObjectObserver()
         setSliderObserver()
         swipeToDelete()
+        deleteAllObjects()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun deleteAllObjects() {
+        binding.deleteAll.setOnClickListener{
+            viewModelMainActivity.renderer.wrappedAnchors.clear()
+            objectAdapter.notifyDataSetChanged() //Todo ask if theres a cleaner way
+        }
     }
 
     override fun onResume() {
@@ -87,7 +106,7 @@ class DialogObjectOptions : DialogFragment() {
 
     private fun setObjectObserver() {
         viewModelMainActivity.renderer.wrappedAnchorsLiveData.observe(this.viewLifecycleOwner) { wrappedAnchors ->
-            objectAdapter.submitList(viewModel.getList(wrappedAnchors))
+            objectAdapter.submitList(wrappedAnchors)
         }
     }
 
@@ -110,7 +129,8 @@ class DialogObjectOptions : DialogFragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 viewModelMainActivity.deleteObject(viewHolder.adapterPosition)
-                objectAdapter.notifyItemChanged(viewModelMainActivity.currentPosition.value!!)
+                objectAdapter.notifyDataSetChanged() //Todo don´t be lazy!
+
             }
 
             override fun onChildDraw(
