@@ -11,13 +11,13 @@ class ObjectPlaneViewModel : ViewModel() {
     private var _changeAnchor = ChangeAnchor()
     val changeAnchor get() = _changeAnchor
 
-    private var anchorPos: Pose? = null
+    private var anchorPose: Pose? = null
 
     fun changeAnchorPosition(event: MotionEvent, view: View, angle: Float) {
-        _changeAnchor.getNewPosition(event, view, anchorPos!!, angle)
+        _changeAnchor.getNewPosition(event, view, anchorPose!!, angle)
     }
 
     fun setAnchorsPos(anchorPosition: Pose) {
-        anchorPos = anchorPosition
+        anchorPose = anchorPosition
     }
 }

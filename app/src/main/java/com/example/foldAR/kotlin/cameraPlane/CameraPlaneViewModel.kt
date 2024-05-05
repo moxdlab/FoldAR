@@ -29,7 +29,6 @@ class CameraPlaneViewModel : ViewModel() {
         private const val bitmapSizeFloat = Constants.bitmapSize.toFloat()
         private const val midPoint = bitmapSizeFloat / 2
         private const val radius = 5f
-        private const val Tag = "ViewModelTAG"
 
         private val  paintObjects = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.RED

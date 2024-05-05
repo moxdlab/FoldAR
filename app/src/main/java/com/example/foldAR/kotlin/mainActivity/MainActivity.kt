@@ -19,7 +19,6 @@ import com.example.foldAR.java.helpers.InstantPlacementSettings
 import com.example.foldAR.java.helpers.SnackbarHelper
 import com.example.foldAR.java.helpers.TapHelper
 import com.example.foldAR.java.samplerender.SampleRender
-import com.example.foldAR.kotlin.dialog.DialogObjectOptions
 import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.helloar.databinding.ActivityMainBinding
 import com.example.foldAR.kotlin.helpers.ARCoreSessionLifecycleHelper
@@ -47,11 +46,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var surfaceView: GLSurfaceView
     private lateinit var renderer: HelloArRenderer
     lateinit var tapHelper: TapHelper
+
     lateinit var arCoreSessionHelper: ARCoreSessionLifecycleHelper
 
     val snackbarHelper = SnackbarHelper()
     val instantPlacementSettings = InstantPlacementSettings()
     val depthSettings = DepthSettings()
+
+    private var placement = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,12 +64,19 @@ class MainActivity : AppCompatActivity() {
         setupArCoreSessionHelper()
         setupRenderer()
         setupSettings()
+        setUpMovementObserer()
+    }
+
+    private fun setUpMovementObserer() {
+        viewModel.touchEvent.observe(this) {
+            viewModel.changeAnchorPosition(binding.surfaceview, renderer.refreshAngle())
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupBinding() {
         surfaceView = findViewById(R.id.surfaceview)
-        tapHelper = TapHelper(this).also { surfaceView.setOnTouchListener(it) }
+        tapHelper = TapHelper(this, viewModel).also { surfaceView.setOnTouchListener(it) }
     }
 
     private fun setupNavigation() {
@@ -90,8 +99,15 @@ class MainActivity : AppCompatActivity() {
         navView.background = null
         supportActionBar?.hide()
 
+        //Todo !!!
         binding.fab.setOnClickListener {
-            DialogObjectOptions.newInstance().show(supportFragmentManager, "")
+            if (placement) {
+                placement = false
+                tapHelper.onPause()
+            } else {
+                placement = true
+                tapHelper.onResume()
+            }
         }
     }
 

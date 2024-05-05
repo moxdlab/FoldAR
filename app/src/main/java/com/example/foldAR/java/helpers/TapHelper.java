@@ -7,6 +7,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.example.foldAR.kotlin.mainActivity.MainActivity;
+import com.example.foldAR.kotlin.mainActivity.MainActivityViewModel;
+
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -15,15 +21,23 @@ import java.util.concurrent.BlockingQueue;
  * render thread.
  */
 public final class TapHelper implements OnTouchListener {
+
+    private final MainActivityViewModel viewModel;
+
+    //Todo
+    private Boolean placement = true;
+
   private final GestureDetector gestureDetector;
   private final BlockingQueue<MotionEvent> queuedSingleTaps = new ArrayBlockingQueue<>(16);
+
 
   /**
    * Creates the tap helper.
    *
    * @param context the application's context.
    */
-  public TapHelper(Context context) {
+  public TapHelper(Context context, MainActivityViewModel viewModel) {
+      this.viewModel = viewModel;
     gestureDetector =
         new GestureDetector(
             context,
@@ -31,8 +45,12 @@ public final class TapHelper implements OnTouchListener {
               @Override
               public boolean onSingleTapUp(MotionEvent e) {
                 // Queue tap if there is space. Tap is lost if queue is full.
-                queuedSingleTaps.offer(e);
+                  if(placement){
+                    queuedSingleTaps.offer(e);
                 return true;
+              }
+                  return false;
+
               }
 
               @Override
@@ -51,8 +69,26 @@ public final class TapHelper implements OnTouchListener {
     return queuedSingleTaps.poll();
   }
 
+  //Todo !!!
   @Override
   public boolean onTouch(View view, MotionEvent motionEvent) {
+      if(!placement){
+          if (motionEvent.getAction() == 0)
+              viewModel.setPose();
+          if (motionEvent.getAction() == 2){
+              Log.d("fdad", "dfawd");
+              viewModel.setTouchEvent(motionEvent);
+      }
+      }
+
     return gestureDetector.onTouchEvent(motionEvent);
+  }
+
+  public void onPause(){
+      this.placement = false;
+  }
+
+  public void onResume(){
+      this.placement = true;
   }
 }

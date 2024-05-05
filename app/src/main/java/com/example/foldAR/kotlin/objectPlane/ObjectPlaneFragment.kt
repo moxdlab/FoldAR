@@ -40,11 +40,6 @@ class ObjectPlaneFragment : Fragment() {
             binding.imageMoveObjectPlane,
             viewModelActivity::changeAnchorsPlaneObject
         )
-
-        selectMovementMethod(
-            binding.imageMoveObjectHeight,
-            viewModelActivity::changeAnchorsHeight
-        )
     }
 
     private fun selectMovementMethod(

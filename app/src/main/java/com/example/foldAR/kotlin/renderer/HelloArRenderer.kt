@@ -461,6 +461,7 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         if (camera.trackingState != TrackingState.TRACKING) return
         val tap = activity.tapHelper.poll() ?: return
 
+        Log.d("wdgbzawid", "wdadwa")
         val hitResultList = if (activity.instantPlacementSettings.isInstantPlacementEnabled) {
             frame.hitTestInstantPlacement(tap.x, tap.y, APPROXIMATE_DISTANCE_METERS)
         } else {
