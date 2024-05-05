@@ -72,8 +72,6 @@ class CameraPlaneViewModel : ViewModel() {
     private var rotation: Float = 0f
     private var center = bitmapSize / 2
 
-    private lateinit var canvas: Canvas
-
     private val bitmap: Bitmap =
         Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888)
 
@@ -184,62 +182,62 @@ class CameraPlaneViewModel : ViewModel() {
 
     fun drawCoordinateSystem(): Bitmap {
         bitmapCoordinateSystem.eraseColor(Color.TRANSPARENT)
-        canvas = Canvas(bitmapCoordinateSystem)
+        val canvas = Canvas(bitmapCoordinateSystem)
 
 
-        drawAxis()
-        drawGrid()
+        drawAxis(canvas)
+        drawGrid(canvas)
 
         return combineBitmaps()
     }
 
-    private fun drawAxis() {
+    private fun drawAxis(canvas: Canvas) {
         val endOffset = 20f
 
         // Draw horizontal and vertical lines
-        drawLine(0f, midPoint, bitmapSizeFloat, midPoint, paintAxis)
-        drawLine(midPoint, 0f, midPoint, bitmapSizeFloat, paintAxis)
+        drawLine(0f, midPoint, bitmapSizeFloat, midPoint, paintAxis, canvas)
+        drawLine(midPoint, 0f, midPoint, bitmapSizeFloat, paintAxis, canvas)
 
         // Draw arrow heads for x-axis
         drawLine(
-            bitmapSizeFloat, midPoint, bitmapSizeFloat - endOffset, midPoint - endOffset, paintAxis
+            bitmapSizeFloat, midPoint, bitmapSizeFloat - endOffset, midPoint - endOffset, paintAxis, canvas
         )
         drawLine(
-            bitmapSizeFloat, midPoint, bitmapSizeFloat - endOffset, midPoint + endOffset, paintAxis
+            bitmapSizeFloat, midPoint, bitmapSizeFloat - endOffset, midPoint + endOffset, paintAxis, canvas
         )
 
         // Draw arrow heads for y-axis
         drawLine(
-            midPoint, 0f, midPoint - endOffset, endOffset, paintAxis
+            midPoint, 0f, midPoint - endOffset, endOffset, paintAxis, canvas
         )
         drawLine(
-            midPoint, 0f, midPoint + endOffset, endOffset, paintAxis
+            midPoint, 0f, midPoint + endOffset, endOffset, paintAxis, canvas
         )
     }
 
-    private fun drawGrid() {
+    private fun drawGrid(canvas: Canvas) {
 
         val distance = (bitmapSize / 2) / (_range + 1)
 
         var i = 1f
         do {
             drawLine(
-                midPoint - (distance * i), 0f, midPoint - (distance * i), bitmapSizeFloat, paintGrid
+                midPoint - (distance * i), 0f, midPoint - (distance * i), bitmapSizeFloat, paintGrid, canvas
             )
             drawLine(
-                midPoint + (distance * i), 0f, midPoint + (distance * i), bitmapSizeFloat, paintGrid
+                midPoint + (distance * i), 0f, midPoint + (distance * i), bitmapSizeFloat, paintGrid, canvas
             )
             drawLine(
-                0f, midPoint - (distance * i), bitmapSizeFloat, midPoint - (distance * i), paintGrid
+                0f, midPoint - (distance * i), bitmapSizeFloat, midPoint - (distance * i), paintGrid, canvas
             )
             drawLine(
-                0f, midPoint + (distance * i), bitmapSizeFloat, midPoint + (distance * i), paintGrid
+                0f, midPoint + (distance * i), bitmapSizeFloat, midPoint + (distance * i), paintGrid, canvas
             )
 
             i++
         } while (i < _range + 1)
     }
 
-    private fun drawLine(startX: Float, startY: Float, endX: Float, endY: Float, paint: Paint) =
+    private fun drawLine(startX: Float, startY: Float, endX: Float, endY: Float, paint: Paint, canvas: Canvas) =
         canvas.drawLine(startX, startY, endX, endY, paint)
 }
