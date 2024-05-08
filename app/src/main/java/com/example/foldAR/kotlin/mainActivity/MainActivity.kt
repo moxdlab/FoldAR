@@ -19,6 +19,7 @@ import com.example.foldAR.java.helpers.InstantPlacementSettings
 import com.example.foldAR.java.helpers.SnackbarHelper
 import com.example.foldAR.java.helpers.TapHelper
 import com.example.foldAR.java.samplerender.SampleRender
+import com.example.foldAR.kotlin.dialog.DialogObjectOptions
 import com.example.foldAR.kotlin.helloar.R
 import com.example.foldAR.kotlin.helloar.databinding.ActivityMainBinding
 import com.example.foldAR.kotlin.helpers.ARCoreSessionLifecycleHelper
@@ -64,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         setupArCoreSessionHelper()
         setupRenderer()
         setupSettings()
+        setupButtons()
         setUpMovementObserer()
     }
 
@@ -99,17 +101,29 @@ class MainActivity : AppCompatActivity() {
         navView.background = null
         supportActionBar?.hide()
 
-        //Todo !!!
-        binding.fab.setOnClickListener {
-            if (placement) {
-                placement = false
-                tapHelper.onPause()
-            } else {
-                placement = true
-                tapHelper.onResume()
+    }
+
+    //Todo !!!
+    private fun setupButtons() {
+        binding.apply {
+            fab.setOnClickListener {
+                if (placement) {
+                    placement = false
+                    fab.setImageResource(R.drawable.`object`)
+                    tapHelper.onPause()
+                } else {
+                    placement = true
+                    fab.setImageResource(R.drawable.add)
+                    tapHelper.onResume()
+                }
+            }
+
+            settingsButton.setOnClickListener {
+                DialogObjectOptions.newInstance().show(supportFragmentManager, "")
             }
         }
     }
+    //Todo !!!
 
     private fun setupArCoreSessionHelper() {
         arCoreSessionHelper = ARCoreSessionLifecycleHelper(this)
