@@ -71,7 +71,7 @@ class MainActivityViewModel : ViewModel() {
     }
 
     private fun changeAnchorsHeight(changeAnchor: ChangeAnchor) =
-        renderer.moveAnchorHeight(changeAnchor.newY, 0)
+        renderer.moveAnchorHeight(changeAnchor.newY, currentPosition.value!!)
 
     fun changeAnchorsPlaneCamera(position: Pair<Float, Float>) =
         renderer.moveAnchorPlane(position.first, position.second, currentPosition.value!!)
