@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -33,7 +32,6 @@ class DialogObjectOptions : DialogFragment() {
     private val binding get() = _binding!!
 
     private val viewModelMainActivity: MainActivityViewModel by activityViewModels()
-    private val viewModel: DialogOptionsViewModel by viewModels()
     private lateinit var objectAdapter: ObjectAdapter
 
     private var displayWidth: Int? = null
