@@ -35,7 +35,7 @@ nächste Schritte:
 
                   B)
                   -Position der Kamera bestimmen
-                  -von dort aus ein imaginäöres Objekt bewegen
+                  -von dort aus ein imaginäres Objekt bewegen
                   -Ausrichtung der Kamera auf x und z Achse bestimmen
                   -Objekt im kreis rotieren bis ausrichtung der Kamera erreicht ist
                   -Position nach Bewegung mit realen Objekt verrechnen
@@ -58,3 +58,14 @@ val Z1 =-sin(rotation) * x + cos(rotation) * Z
 counterclockwise
 val X1 = cos(rotation) * x - sin(rotation) * Z
 val Z1 = sin(rotation) * x + cos(rotation) * Z
+
+1)Place Objects
+2)Move Objects
+3)Switch Mode
+4)Move Object height
+5)Map Objects
+6)Move Objects on other Fragment
+7)Change Scale
+8)Delete Object
+9)Select new Object
+10)Delete all Objects

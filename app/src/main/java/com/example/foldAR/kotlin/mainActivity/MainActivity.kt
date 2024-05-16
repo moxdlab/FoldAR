@@ -47,11 +47,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var surfaceView: GLSurfaceView
     private lateinit var renderer: HelloArRenderer
     lateinit var tapHelper: TapHelper
+
     lateinit var arCoreSessionHelper: ARCoreSessionLifecycleHelper
 
     val snackbarHelper = SnackbarHelper()
     val instantPlacementSettings = InstantPlacementSettings()
     val depthSettings = DepthSettings()
+
+    private var placement = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,12 +65,20 @@ class MainActivity : AppCompatActivity() {
         setupArCoreSessionHelper()
         setupRenderer()
         setupSettings()
+        setupButtons()
+        setUpMovementObserer()
+    }
+
+    private fun setUpMovementObserer() {
+        viewModel.touchEvent.observe(this) {
+            viewModel.changeAnchorPosition(binding.surfaceview, renderer.refreshAngle())
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupBinding() {
         surfaceView = findViewById(R.id.surfaceview)
-        tapHelper = TapHelper(this).also { surfaceView.setOnTouchListener(it) }
+        tapHelper = TapHelper(this, viewModel).also { surfaceView.setOnTouchListener(it) }
     }
 
     private fun setupNavigation() {
@@ -90,10 +101,29 @@ class MainActivity : AppCompatActivity() {
         navView.background = null
         supportActionBar?.hide()
 
-        binding.fab.setOnClickListener {
-            DialogObjectOptions.newInstance().show(supportFragmentManager, "")
+    }
+
+    //Todo !!!
+    private fun setupButtons() {
+        binding.apply {
+            fab.setOnClickListener {
+                if (placement) {
+                    placement = false
+                    fab.setImageResource(R.drawable.`object`)
+                    tapHelper.onPause()
+                } else {
+                    placement = true
+                    fab.setImageResource(R.drawable.add)
+                    tapHelper.onResume()
+                }
+            }
+
+            settingsButton.setOnClickListener {
+                DialogObjectOptions.newInstance().show(supportFragmentManager, "")
+            }
         }
     }
+    //Todo !!!
 
     private fun setupArCoreSessionHelper() {
         arCoreSessionHelper = ARCoreSessionLifecycleHelper(this)
@@ -167,10 +197,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-//        FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus)
-    }
+    /* override fun onWindowFocusChanged(hasFocus: Boolean) {
+         super.onWindowFocusChanged(hasFocus)
+         FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus)
+     }*/
 
     fun showOcclusionDialogIfNeeded() { //Todo
         val session = arCoreSessionHelper.session ?: return

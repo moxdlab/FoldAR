@@ -10,16 +10,6 @@
         android:id="@+id/image_move_object_plane"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="100dp"
         android:background="@drawable/coordinate_system" />
-
-    <ImageView
-        android:id="@+id/image_move_object_height"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:background="@drawable/arrow_up"
-        android:scaleType="fitXY"
-        app:layout_constraintEnd_toStartOf="@id/image_move_object_plane"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

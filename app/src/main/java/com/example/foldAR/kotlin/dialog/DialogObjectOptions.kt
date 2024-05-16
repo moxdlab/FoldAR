@@ -1,13 +1,15 @@
 package com.example.foldAR.kotlin.dialog
 
+import android.annotation.SuppressLint
 import android.graphics.Canvas
 import android.os.Bundle
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -29,8 +31,7 @@ class DialogObjectOptions : DialogFragment() {
     private var _binding: DialogObjectOptionsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModelMainActivity: MainActivityViewModel
-    private  val viewModel: DialogOptionsViewModel by viewModels()
+    private val viewModelMainActivity: MainActivityViewModel by activityViewModels()
     private lateinit var objectAdapter: ObjectAdapter
 
     private var displayWidth: Int? = null
@@ -38,9 +39,16 @@ class DialogObjectOptions : DialogFragment() {
     override fun onStart() {
         super.onStart()
         val width = (resources.displayMetrics.widthPixels * 0.854).toInt()
+
         dialog!!.window?.apply {
             setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT)
             setBackgroundDrawableResource(android.R.color.transparent)
+
+            val params = attributes
+            params.gravity = Gravity.TOP
+            params.y = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 125f, resources.displayMetrics).toInt()
+            attributes = params
+
         }
     }
 
@@ -49,7 +57,6 @@ class DialogObjectOptions : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        viewModelMainActivity = ViewModelProvider(requireActivity())[MainActivityViewModel::class.java]
         _binding = DialogObjectOptionsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -61,6 +68,15 @@ class DialogObjectOptions : DialogFragment() {
         setObjectObserver()
         setSliderObserver()
         swipeToDelete()
+        deleteAllObjects()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun deleteAllObjects() {
+        binding.deleteAll.setOnClickListener{
+            viewModelMainActivity.renderer.wrappedAnchors.clear()
+            objectAdapter.notifyDataSetChanged() //Todo ask if theres a cleaner way
+        }
     }
 
     override fun onResume() {
@@ -71,7 +87,7 @@ class DialogObjectOptions : DialogFragment() {
     private fun setAdapter() {
         objectAdapter = ObjectAdapter(object : ObjectAdapter.ClickListenerButton {
             override fun onItemClicked(position: Int) {
-                objectAdapter.notifyItemChanged(viewModelMainActivity.currentPosition)
+                objectAdapter.notifyItemChanged(viewModelMainActivity.currentPosition.value!!)
                 viewModelMainActivity.setPosition(position)
                 objectAdapter.notifyItemChanged(position)
             }
@@ -88,11 +104,12 @@ class DialogObjectOptions : DialogFragment() {
 
     private fun setObjectObserver() {
         viewModelMainActivity.renderer.wrappedAnchorsLiveData.observe(this.viewLifecycleOwner) { wrappedAnchors ->
-            objectAdapter.submitList(viewModel.getList(wrappedAnchors))
+            objectAdapter.submitList(wrappedAnchors)
         }
     }
 
     private fun setSliderObserver() {
+        binding.slider.value = viewModelMainActivity.scale.value!!
         binding.slider.addOnChangeListener { slider, value, fromUser ->
             viewModelMainActivity.setScale(value)
         }
@@ -110,7 +127,8 @@ class DialogObjectOptions : DialogFragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 viewModelMainActivity.deleteObject(viewHolder.adapterPosition)
-                objectAdapter.notifyItemChanged(viewModelMainActivity.currentPosition)
+                objectAdapter.notifyDataSetChanged() //Todo don´t be lazy!
+
             }
 
             override fun onChildDraw(
