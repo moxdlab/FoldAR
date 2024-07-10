@@ -103,19 +103,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    //Todo !!!
     private fun setupButtons() {
         binding.apply {
             fab.setOnClickListener {
-                if (placement) {
-                    placement = false
-                    fab.setImageResource(R.drawable.`object`)
-                    tapHelper.onPause()
-                } else {
-                    placement = true
-                    fab.setImageResource(R.drawable.add)
-                    tapHelper.onResume()
-                }
+                togglePlacement()
             }
 
             settingsButton.setOnClickListener {
@@ -123,7 +114,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    //Todo !!!
+
+    //make sure its always the desired output
+    private fun togglePlacement() {
+
+        if (placement) {
+            placement = false
+            binding.fab.setImageResource(R.drawable.`object`)
+            tapHelper.onPause()
+        } else {
+            placement = true
+            binding.fab.setImageResource(R.drawable.add)
+            tapHelper.onResume()
+        }
+
+    }
 
     private fun setupArCoreSessionHelper() {
         arCoreSessionHelper = ARCoreSessionLifecycleHelper(this)
@@ -196,11 +201,6 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
     }
-
-    /* override fun onWindowFocusChanged(hasFocus: Boolean) {
-         super.onWindowFocusChanged(hasFocus)
-         FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus)
-     }*/
 
     fun showOcclusionDialogIfNeeded() { //Todo
         val session = arCoreSessionHelper.session ?: return
