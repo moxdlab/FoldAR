@@ -202,7 +202,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showOcclusionDialogIfNeeded() { //Todo
+    /**
+     * Not necessary for current app but useful if used on other devices
+     * **/
+    fun showOcclusionDialogIfNeeded() {
         val session = arCoreSessionHelper.session ?: return
         val isDepthSupported = session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)
         if (!this.depthSettings.shouldShowDepthEnableDialog() || !isDepthSupported) {
