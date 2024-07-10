@@ -24,7 +24,7 @@ public final class TapHelper implements OnTouchListener {
 
     private final MainActivityViewModel viewModel;
 
-    //Todo
+    //simple check to see if placement or moving action
     private Boolean placement = true;
 
   private final GestureDetector gestureDetector;
@@ -69,13 +69,12 @@ public final class TapHelper implements OnTouchListener {
     return queuedSingleTaps.poll();
   }
 
-  //Todo !!!
   @Override
   public boolean onTouch(View view, MotionEvent motionEvent) {
       if(!placement){
-          if (motionEvent.getAction() == 0)
+          if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
               viewModel.setPose();
-          if (motionEvent.getAction() == 2){
+          if (motionEvent.getAction() == MotionEvent.ACTION_MOVE){
               Log.d("fdad", "dfawd");
               viewModel.setTouchEvent(motionEvent);
       }

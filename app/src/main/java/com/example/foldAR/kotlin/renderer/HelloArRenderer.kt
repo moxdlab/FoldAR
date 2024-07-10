@@ -318,11 +318,6 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
             session.hasTrackingPlane() && wrappedAnchors.isNotEmpty() -> null
             else -> activity.getString(R.string.searching_planes)
         }
-        //if (message == null) { //Todo
-        //    activity.view.snackbarHelper.hide(activity)
-        //} else {
-        //    activity.view.snackbarHelper.showMessage(activity, message)
-        //}
 
         // -- Draw background
         if (frame.timestamp != 0L) {
@@ -487,12 +482,6 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         if (firstHitResult != null && wrappedAnchors.size <= Constants.objectsMaxSize) {
             // Cap the number of objects created. This avoids overloading both the
             // rendering system and ARCore.
-
-            //if (wrappedAnchors.size >= 5) {
-            //    wrappedAnchors[0].anchor.detach()
-            //    wrappedAnchors.removeAt(0)
-            //}
-
             // Adding an Anchor tells ARCore that it should track this position in
             // space. This anchor is created on the Plane to place the 3D model
             // in the correct position relative both to the world and to the plane.

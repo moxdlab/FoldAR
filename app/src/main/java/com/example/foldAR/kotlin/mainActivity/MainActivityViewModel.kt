@@ -58,7 +58,14 @@ class MainActivityViewModel : ViewModel() {
     //Todo !!!
     fun changeAnchorPosition(view: View, angle: Float) {
         renderer.wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
+            val scaleFactorY = 500 / view.height
+            //Todo check + clean
+            if (touchEvent.value!!.action == MotionEvent.ACTION_DOWN)
+                _changeAnchor.setOffset(touchEvent.value!!.y * scaleFactorY)
+            //Todo
+
             if (touchEvent.value!!.action == MotionEvent.ACTION_MOVE) {
+
                 _changeAnchor.getNewPosition(
                     touchEvent.value!!,
                     view,
@@ -69,6 +76,7 @@ class MainActivityViewModel : ViewModel() {
             changeAnchorsHeight(changeAnchor)
         }
     }
+
 
     private fun changeAnchorsHeight(changeAnchor: ChangeAnchor) =
         renderer.moveAnchorHeight(changeAnchor.newY, currentPosition.value!!)

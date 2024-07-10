@@ -14,9 +14,16 @@ class ChangeAnchor {
 
     /**if a bitmap of different size is used change this value or assign it direct!!*/
     companion object {
-        const val offset = 250f //always half of used bitmap. I found that 500 is an acceptable size
+         //always half of used bitmap. I found that 500 is an acceptable size
         const val Tag = "changeAnchorTag"
         private val bitmap = Bitmap.createBitmap(Constants.bitmapSize, Constants.bitmapSize, Bitmap.Config.ARGB_8888)
+    }
+
+    //Todo setter
+    private var offset : Float= 250f
+
+    fun setOffset(offset1: Float){
+        offset = offset1
     }
 
     //its bitmap.size/scaleFactor/2 in meters at the views edges
@@ -31,7 +38,7 @@ class ChangeAnchor {
     private var z1 = 0f
 
     //returns the new anchors specific value plus moved distance
-    val newX get() = anchor?.tx()!!.plus(calculateNewPosition(x1)) ?: 0f
+    val newX get() = anchor?.tx()?.plus(calculateNewPosition(x1)) ?: 0f
     val newY get() = anchor?.ty()?.minus(calculateNewPosition(distanceY)) ?: 0f
     val newZ get() = anchor?.tz()?.minus(calculateNewPosition(z1)) ?: 0f
 
@@ -41,6 +48,15 @@ class ChangeAnchor {
     private fun calculateNewPosition(distance: Float) = distance / offset
 
     private fun calculatePointsPlane(x: Float, y: Float) {
+        distanceX = -calculatePoints(x)
+        distanceY = calculatePoints(y)
+        distanceZ = calculatePoints(y)
+
+        x1 = (cos(rotation) * distanceX - sin(rotation) * distanceZ)
+        z1 = (sin(rotation) * distanceX + cos(rotation) * distanceZ)
+    }
+
+    private fun calculatePointsHeight(x: Float, y: Float) {
         distanceX = -calculatePoints(x)
         distanceY = calculatePoints(y)
         distanceZ = calculatePoints(y)
