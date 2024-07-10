@@ -19,11 +19,10 @@ class ChangeAnchor {
         private val bitmap = Bitmap.createBitmap(Constants.bitmapSize, Constants.bitmapSize, Bitmap.Config.ARGB_8888)
     }
 
-    //Todo setter
     private var offset : Float= 250f
 
-    fun setOffset(offset1: Float){
-        offset = offset1
+    fun setOffset(offset: Float){
+        this.offset = offset
     }
 
     //its bitmap.size/scaleFactor/2 in meters at the views edges
