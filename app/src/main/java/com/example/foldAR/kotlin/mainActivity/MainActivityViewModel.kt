@@ -55,7 +55,7 @@ class MainActivityViewModel : ViewModel() {
         )
     }
 
-    fun changeAnchorPosition(view: View, angle: Float) {
+    fun changeAnchorPosition(view: View) {
         renderer.wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
             val scaleFactorY = 500 / view.height
             val currentTouchEvent = touchEvent.value
@@ -66,14 +66,14 @@ class MainActivityViewModel : ViewModel() {
                 when (it.action) {
                     MotionEvent.ACTION_DOWN -> _changeAnchor.setOffset(it.y * scaleFactorY)
 
-                    MotionEvent.ACTION_MOVE -> _changeAnchor.getNewPosition(it, view, pose!!, angle)
+                    MotionEvent.ACTION_MOVE -> _changeAnchor.getNewPosition(it, view, pose!!, null)
                 }
             }
-            changeAnchorsHeight(changeAnchor)
+            changeAnchorsHeight()
         }
     }
 
-    private fun changeAnchorsHeight(changeAnchor: ChangeAnchor) =
+    private fun changeAnchorsHeight() =
         renderer.moveAnchorHeight(changeAnchor.newY, currentPosition.value!!)
 
     fun changeAnchorsPlaneCamera(position: Pair<Float, Float>) =

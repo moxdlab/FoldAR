@@ -111,7 +111,7 @@ class DialogObjectOptions : DialogFragment() {
 
     private fun setSliderObserver() {
         binding.slider.value = viewModelMainActivity.scale.value!!
-        binding.slider.addOnChangeListener { slider, value, fromUser ->
+        binding.slider.addOnChangeListener { _, value, _ ->
             viewModelMainActivity.setScale(value)
         }
     }

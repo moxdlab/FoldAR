@@ -541,6 +541,7 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
 
     private fun showError(errorMessage: String) =
         activity.snackbarHelper.showError(activity, errorMessage)
+
 }
 
 /**

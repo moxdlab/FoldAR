@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     val instantPlacementSettings = InstantPlacementSettings()
     val depthSettings = DepthSettings()
 
+    //to see whether a touch is for placement or movement
     private var placement = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpMovementObserer() {
         viewModel.touchEvent.observe(this) {
-            viewModel.changeAnchorPosition(binding.surfaceview, renderer.refreshAngle())
+            viewModel.changeAnchorPosition(binding.surfaceview)
         }
     }
 

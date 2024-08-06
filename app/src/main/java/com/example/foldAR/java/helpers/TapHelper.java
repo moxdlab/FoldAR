@@ -74,10 +74,8 @@ public final class TapHelper implements OnTouchListener {
       if(!placement){
           if (motionEvent.getAction() == MotionEvent.ACTION_DOWN)
               viewModel.setPose();
-          if (motionEvent.getAction() == MotionEvent.ACTION_MOVE){
-              Log.d("fdad", "dfawd");
+          if (motionEvent.getAction() == MotionEvent.ACTION_MOVE)
               viewModel.setTouchEvent(motionEvent);
-      }
       }
 
     return gestureDetector.onTouchEvent(motionEvent);

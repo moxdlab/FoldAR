@@ -14,14 +14,15 @@ class ChangeAnchor {
 
     /**if a bitmap of different size is used change this value or assign it direct!!*/
     companion object {
-         //always half of used bitmap. I found that 500 is an acceptable size
+        //always half of used bitmap. I found that 500 is an acceptable size
         const val Tag = "changeAnchorTag"
-        private val bitmap = Bitmap.createBitmap(Constants.bitmapSize, Constants.bitmapSize, Bitmap.Config.ARGB_8888)
+        private val bitmap =
+            Bitmap.createBitmap(Constants.bitmapSize, Constants.bitmapSize, Bitmap.Config.ARGB_8888)
     }
 
-    private var offset : Float= 250f
+    private var offset: Float = 250f
 
-    fun setOffset(offset: Float){
+    fun setOffset(offset: Float) {
         this.offset = offset
     }
 
@@ -55,23 +56,16 @@ class ChangeAnchor {
         z1 = (sin(rotation) * distanceX + cos(rotation) * distanceZ)
     }
 
-    private fun calculatePointsHeight(x: Float, y: Float) {
-        distanceX = -calculatePoints(x)
-        distanceY = calculatePoints(y)
-        distanceZ = calculatePoints(y)
-
-        x1 = (cos(rotation) * distanceX - sin(rotation) * distanceZ)
-        z1 = (sin(rotation) * distanceX + cos(rotation) * distanceZ)
-    }
-
     //get touch value and normalize it to the bitmaps size
     fun getNewPosition(
         event: MotionEvent,
         view: View,
         anchorPos: Pose,
-        rotation: Float
+        rotation: Float?
     ) {
-        this.rotation = rotation
+        if (rotation != null)
+            this.rotation = rotation
+
         anchor = anchorPos
         val scaleFactorX = bitmap.width.toFloat() / view.width
         val scaleFactorY = bitmap.height.toFloat() / view.height
