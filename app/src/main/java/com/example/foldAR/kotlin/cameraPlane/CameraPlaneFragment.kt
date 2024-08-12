@@ -126,7 +126,7 @@ class CameraPlaneFragment : Fragment() {
                     }
 
                     MotionEvent.ACTION_MOVE ->
-                        if (event.pointerCount == 1 && System.currentTimeMillis() - time > 200) {
+                        if (previousCount == 1 && System.currentTimeMillis() - time > 200) {
                             viewModelActivity.changeAnchorsPlaneCamera(
                                 viewModel.moveAnchors(event, binding.imageMoveObjectPlane)
                             )

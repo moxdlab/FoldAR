@@ -67,10 +67,10 @@ class MainActivity : AppCompatActivity() {
         setupRenderer()
         setupSettings()
         setupButtons()
-        setUpMovementObserer()
+        setUpMovementObserver()
     }
 
-    private fun setUpMovementObserer() {
+    private fun setUpMovementObserver() {
         viewModel.touchEvent.observe(this) {
             viewModel.changeAnchorPosition(binding.surfaceview)
         }

@@ -501,11 +501,24 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         wrappedAnchorsLiveData.value = wrappedAnchors
     }
 
-    private fun moveAnchor(moveX: Float, moveY: Float, moveZ: Float, position: Int) {
+    private fun moveAnchor(moveX: Float, moveY: Float, moveZ: Float, position: Int) { //Todo rotate properly and add it to makeRotation
+        wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
+            val pose = wrappedAnchors[position].anchor.pose
+            val translation = Pose.makeTranslation(moveX, moveY, moveZ)
+            val newPose = pose.compose(translation)
+            val newAnchor =
+                WrappedAnchor(session!!.createAnchor(newPose), wrappedAnchors[position].trackable)
+
+            wrappedAnchors[position] = newAnchor
+        }
+    }
+
+    private fun moveAnchor1(moveX: Float, moveY: Float, moveZ: Float, position: Int) {
         wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
             val pose = Pose.makeTranslation(moveX, moveY, moveZ)
             val newAnchor =
                 WrappedAnchor(session!!.createAnchor(pose), wrappedAnchors[position].trackable)
+
             wrappedAnchors[position] = newAnchor
         }
     }
@@ -539,9 +552,10 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         return (deg / 180 * PI).toFloat()
     }
 
+    fun rotateObject(degree: Float, position: Int){
+    }
     private fun showError(errorMessage: String) =
         activity.snackbarHelper.showError(activity, errorMessage)
-
 }
 
 /**

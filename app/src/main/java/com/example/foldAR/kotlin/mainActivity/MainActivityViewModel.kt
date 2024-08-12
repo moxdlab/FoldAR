@@ -95,4 +95,8 @@ class MainActivityViewModel : ViewModel() {
             this.pose = renderer.wrappedAnchors[currentPosition.value!!].anchor.pose
         }
     }
+
+    fun rotateObject(motionEvent: MotionEvent, currentMain: Float) {
+        renderer.rotateObject(motionEvent.getX(0) - currentMain, currentPosition.value!!)
+    }
 }
