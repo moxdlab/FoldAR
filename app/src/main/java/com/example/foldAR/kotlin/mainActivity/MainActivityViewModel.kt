@@ -1,5 +1,6 @@
 package com.example.foldAR.kotlin.mainActivity
 
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.lifecycle.MutableLiveData
@@ -28,6 +29,8 @@ class MainActivityViewModel : ViewModel() {
 
     private var _touchEvent: MutableLiveData<MotionEvent> = MutableLiveData()
     val touchEvent get() = _touchEvent
+
+    private var oldDegree = 0f
 
     fun setScale(scale: Float) {
         _scale.value = scale
@@ -64,9 +67,9 @@ class MainActivityViewModel : ViewModel() {
             currentTouchEvent?.let {
 
                 when (it.action) {
-                    MotionEvent.ACTION_DOWN -> _changeAnchor.setOffset(it.y * scaleFactorY)
+                    MotionEvent.ACTION_DOWN -> changeAnchor.setOffset(it.y * scaleFactorY)
 
-                    MotionEvent.ACTION_MOVE -> _changeAnchor.getNewPosition(it, view, pose!!, null)
+                    MotionEvent.ACTION_MOVE -> changeAnchor.getNewPosition(it, view, pose!!, null)
                 }
             }
             changeAnchorsHeight()
@@ -97,6 +100,14 @@ class MainActivityViewModel : ViewModel() {
     }
 
     fun rotateObject(motionEvent: MotionEvent, currentMain: Float) {
-        renderer.rotateObject(motionEvent.getX(0) - currentMain, currentPosition.value!!)
+
+        val rotation = ((motionEvent.getX(0) - currentMain) / 1.47) % 360
+        renderer.rotateAnchor(rotation.toFloat(), currentPosition.value!!)
+        Log.d("rotationTest", rotation.toString())
+
+    }
+
+    fun resetRotation() {
+        oldDegree = 0f;
     }
 }

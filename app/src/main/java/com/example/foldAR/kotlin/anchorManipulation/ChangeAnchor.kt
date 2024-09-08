@@ -1,5 +1,7 @@
 package com.example.foldAR.kotlin.anchorManipulation
 
+/**Only used for ObjectPlane since an other approach is used in other fragments as of now.
+ * Could directly be implemented in viewModel.*/
 
 import android.graphics.Bitmap
 import android.view.MotionEvent

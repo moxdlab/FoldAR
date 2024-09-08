@@ -36,6 +36,8 @@ import com.google.ar.core.TrackingFailureReason
 import com.google.ar.core.TrackingState
 import com.google.ar.core.exceptions.CameraNotAvailableException
 import com.google.ar.core.exceptions.NotYetAvailableException
+import com.google.ar.sceneform.math.Quaternion
+import com.google.ar.sceneform.math.Vector3
 import java.io.IOException
 import java.nio.ByteBuffer
 import java.util.Collections
@@ -501,11 +503,22 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         wrappedAnchorsLiveData.value = wrappedAnchors
     }
 
-    private fun moveAnchor(moveX: Float, moveY: Float, moveZ: Float, position: Int) { //Todo rotate properly and add it to makeRotation
+    private fun moveAnchor(moveX: Float, moveY: Float, moveZ: Float, position: Int) {
         wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
-            val pose = wrappedAnchors[position].anchor.pose
+
+            val rotationQuaternion = wrappedAnchors[position].anchor.pose.rotationQuaternion
+            //combine new position and rotation
             val translation = Pose.makeTranslation(moveX, moveY, moveZ)
-            val newPose = pose.compose(translation)
+            val rotation = Pose.makeRotation(
+                0f,
+                rotationQuaternion[1],
+                0f,
+                rotationQuaternion[3]
+            ) //just to make it look normal
+            val newPose = translation.compose(rotation)
+
+            wrappedAnchors[position].anchor.detach() //Todo optional?
+            //add to list
             val newAnchor =
                 WrappedAnchor(session!!.createAnchor(newPose), wrappedAnchors[position].trackable)
 
@@ -513,14 +526,27 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         }
     }
 
-    private fun moveAnchor1(moveX: Float, moveY: Float, moveZ: Float, position: Int) {
-        wrappedAnchors.takeIf { it.isNotEmpty() }?.let {
-            val pose = Pose.makeTranslation(moveX, moveY, moveZ)
-            val newAnchor =
-                WrappedAnchor(session!!.createAnchor(pose), wrappedAnchors[position].trackable)
+    fun rotateAnchor(rotation: Float, position: Int) {
 
-            wrappedAnchors[position] = newAnchor
-        }
+
+        val pose = wrappedAnchors[position].anchor.pose
+        val translation = Pose.makeTranslation(pose.tx(), pose.ty(), pose.tz())
+
+
+        val rotationQuaternion = Quaternion.axisAngle(Vector3(0f, 1f, 0f), rotation)
+        //rotate it here
+
+        val rotatedPose = Pose.makeRotation(
+            rotationQuaternion.x,
+            rotationQuaternion.y,
+            rotationQuaternion.z,
+            rotationQuaternion.w
+        )
+
+        val newPose = translation.compose(rotatedPose)
+
+        wrappedAnchors[position] =
+            WrappedAnchor(session!!.createAnchor(newPose), wrappedAnchors[position].trackable)
     }
 
     fun moveAnchorPlane(moveX: Float, moveZ: Float, position: Int) {
@@ -552,8 +578,6 @@ class HelloArRenderer(val activity: MainActivity) : SampleRender.Renderer,
         return (deg / 180 * PI).toFloat()
     }
 
-    fun rotateObject(degree: Float, position: Int){
-    }
     private fun showError(errorMessage: String) =
         activity.snackbarHelper.showError(activity, errorMessage)
 }

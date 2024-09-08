@@ -79,8 +79,10 @@ public final class TapHelper implements OnTouchListener {
       if (motionEvent.getPointerCount() != previousCount) {
           time = System.currentTimeMillis();
           previousCount = motionEvent.getPointerCount();
-          if(motionEvent.getPointerCount() == 2)
+          if(motionEvent.getPointerCount() == 2) {
               currentMain = motionEvent.getX(0);
+              viewModel.resetRotation();
+          }
       }
 
       if(!placement){
