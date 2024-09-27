@@ -106,7 +106,7 @@ class CameraPlaneViewModel : ViewModel() {
 
         mutex.withLock {
             wrappedAnchorsCopy.withIndex()
-                .forEach { //Todo crashes when adding new object while updating it. Mby fixed. Look into it with additional testing!!
+                .forEach { //Todo crashes when adding new object while updating it. Mby fixed. Look into it with additional testing!! Mby the RecyclerView isn´t updated properly
                     val anchorPose = it.value.anchor.pose
                     val (anchorPoseX, anchorPoseZ) = arrayOf(anchorPose.tx(), anchorPose.tz())
 

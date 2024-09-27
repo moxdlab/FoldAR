@@ -74,8 +74,9 @@ class DialogObjectOptions : DialogFragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun deleteAllObjects() {
         binding.deleteAll.setOnClickListener{
+            val size = viewModelMainActivity.renderer.wrappedAnchors.size
             viewModelMainActivity.renderer.wrappedAnchors.clear()
-            objectAdapter.notifyDataSetChanged() //Todo ask if theres a cleaner way
+            objectAdapter.notifyItemRangeRemoved(0, size)
         }
     }
 
@@ -110,7 +111,7 @@ class DialogObjectOptions : DialogFragment() {
 
     private fun setSliderObserver() {
         binding.slider.value = viewModelMainActivity.scale.value!!
-        binding.slider.addOnChangeListener { slider, value, fromUser ->
+        binding.slider.addOnChangeListener { _, value, _ ->
             viewModelMainActivity.setScale(value)
         }
     }
@@ -126,9 +127,9 @@ class DialogObjectOptions : DialogFragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                viewModelMainActivity.deleteObject(viewHolder.adapterPosition)
-                objectAdapter.notifyDataSetChanged() //Todo don´t be lazy!
-
+                val position = viewHolder.adapterPosition
+                viewModelMainActivity.deleteObject(position)
+                objectAdapter.notifyItemRemoved(position)
             }
 
             override fun onChildDraw(

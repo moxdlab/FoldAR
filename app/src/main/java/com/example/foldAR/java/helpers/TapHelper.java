@@ -23,8 +23,12 @@ import java.util.concurrent.BlockingQueue;
 public final class TapHelper implements OnTouchListener {
 
     private final MainActivityViewModel viewModel;
+    private Long time = 0L;
+    private int previousCount = 0;
+    private Float currentMain = 0f;
 
-    //Todo
+
+    //simple check to see if placement or moving action
     private Boolean placement = true;
 
   private final GestureDetector gestureDetector;
@@ -69,16 +73,29 @@ public final class TapHelper implements OnTouchListener {
     return queuedSingleTaps.poll();
   }
 
-  //Todo !!!
   @Override
   public boolean onTouch(View view, MotionEvent motionEvent) {
-      if(!placement){
-          if (motionEvent.getAction() == 0)
-              viewModel.setPose();
-          if (motionEvent.getAction() == 2){
-              Log.d("fdad", "dfawd");
-              viewModel.setTouchEvent(motionEvent);
+
+      if (motionEvent.getPointerCount() != previousCount) {
+          time = System.currentTimeMillis();
+          previousCount = motionEvent.getPointerCount();
+          if(motionEvent.getPointerCount() == 2) {
+              currentMain = motionEvent.getX(0);
+              viewModel.resetRotation();
+          }
       }
+
+      if(!placement){
+          if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+              time = System.currentTimeMillis();
+              viewModel.setPose();
+          }
+          if(previousCount == 2){
+              viewModel.rotateObject(motionEvent, currentMain);
+          }
+          if (motionEvent.getAction() == MotionEvent.ACTION_MOVE && previousCount == 1 && System.currentTimeMillis() - time > 200) {
+              viewModel.setTouchEvent(motionEvent);
+          }
       }
 
     return gestureDetector.onTouchEvent(motionEvent);

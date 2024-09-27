@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity() {
     val instantPlacementSettings = InstantPlacementSettings()
     val depthSettings = DepthSettings()
 
+    //to see whether a touch is for placement or movement
     private var placement = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,12 +67,12 @@ class MainActivity : AppCompatActivity() {
         setupRenderer()
         setupSettings()
         setupButtons()
-        setUpMovementObserer()
+        setUpMovementObserver()
     }
 
-    private fun setUpMovementObserer() {
+    private fun setUpMovementObserver() {
         viewModel.touchEvent.observe(this) {
-            viewModel.changeAnchorPosition(binding.surfaceview, renderer.refreshAngle())
+            viewModel.changeAnchorPosition(binding.surfaceview)
         }
     }
 
@@ -103,19 +104,10 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    //Todo !!!
     private fun setupButtons() {
         binding.apply {
             fab.setOnClickListener {
-                if (placement) {
-                    placement = false
-                    fab.setImageResource(R.drawable.`object`)
-                    tapHelper.onPause()
-                } else {
-                    placement = true
-                    fab.setImageResource(R.drawable.add)
-                    tapHelper.onResume()
-                }
+                togglePlacement()
             }
 
             settingsButton.setOnClickListener {
@@ -123,7 +115,21 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-    //Todo !!!
+
+    //make sure its always the desired output
+    private fun togglePlacement() {
+
+        if (placement) {
+            placement = false
+            binding.fab.setImageResource(R.drawable.`object`)
+            tapHelper.onPause()
+        } else {
+            placement = true
+            binding.fab.setImageResource(R.drawable.add)
+            tapHelper.onResume()
+        }
+
+    }
 
     private fun setupArCoreSessionHelper() {
         arCoreSessionHelper = ARCoreSessionLifecycleHelper(this)
@@ -197,12 +203,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /* override fun onWindowFocusChanged(hasFocus: Boolean) {
-         super.onWindowFocusChanged(hasFocus)
-         FullScreenHelper.setFullScreenOnWindowFocusChanged(this, hasFocus)
-     }*/
-
-    fun showOcclusionDialogIfNeeded() { //Todo
+    /**
+     * Not necessary for current app but useful if used on other devices
+     * **/
+    fun showOcclusionDialogIfNeeded() {
         val session = arCoreSessionHelper.session ?: return
         val isDepthSupported = session.isDepthModeSupported(Config.DepthMode.AUTOMATIC)
         if (!this.depthSettings.shouldShowDepthEnableDialog() || !isDepthSupported) {
