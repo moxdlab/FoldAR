@@ -1,5 +1,7 @@
 package com.example.foldAR.kotlin.anchorManipulation
 
+/**Only used for ObjectPlane since an other approach is used in other fragments as of now.
+ * Could directly be implemented in viewModel.*/
 
 import android.graphics.Bitmap
 import android.view.MotionEvent
@@ -14,9 +16,16 @@ class ChangeAnchor {
 
     /**if a bitmap of different size is used change this value or assign it direct!!*/
     companion object {
-        const val offset = 250f //always half of used bitmap. I found that 500 is an acceptable size
+        //always half of used bitmap. I found that 500 is an acceptable size
         const val Tag = "changeAnchorTag"
-        private val bitmap = Bitmap.createBitmap(Constants.bitmapSize, Constants.bitmapSize, Bitmap.Config.ARGB_8888)
+        private val bitmap =
+            Bitmap.createBitmap(Constants.bitmapSize, Constants.bitmapSize, Bitmap.Config.ARGB_8888)
+    }
+
+    private var offset: Float = 250f
+
+    fun setOffset(offset: Float) {
+        this.offset = offset
     }
 
     //its bitmap.size/scaleFactor/2 in meters at the views edges
@@ -31,7 +40,7 @@ class ChangeAnchor {
     private var z1 = 0f
 
     //returns the new anchors specific value plus moved distance
-    val newX get() = anchor?.tx()!!.plus(calculateNewPosition(x1)) ?: 0f
+    val newX get() = anchor?.tx()?.plus(calculateNewPosition(x1)) ?: 0f
     val newY get() = anchor?.ty()?.minus(calculateNewPosition(distanceY)) ?: 0f
     val newZ get() = anchor?.tz()?.minus(calculateNewPosition(z1)) ?: 0f
 
@@ -54,9 +63,11 @@ class ChangeAnchor {
         event: MotionEvent,
         view: View,
         anchorPos: Pose,
-        rotation: Float
+        rotation: Float?
     ) {
-        this.rotation = rotation
+        if (rotation != null)
+            this.rotation = rotation
+
         anchor = anchorPos
         val scaleFactorX = bitmap.width.toFloat() / view.width
         val scaleFactorY = bitmap.height.toFloat() / view.height

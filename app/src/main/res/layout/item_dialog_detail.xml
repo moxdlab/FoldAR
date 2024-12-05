@@ -39,8 +39,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/index"
             app:layout_constraintStart_toEndOf="@id/select_button"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="x: 321312, y: 321, z: 4312" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/index"
